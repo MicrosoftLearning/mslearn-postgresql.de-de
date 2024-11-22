@@ -6,25 +6,25 @@ lab:
 
 # Generieren von Vektoreinbettungen mit Azure OpenAI
 
-Zum Ausführen von semantischen Suchvorgängen müssen Sie zuerst Einbettungsvektoren aus einem Modell generieren, sie in einer Vektordatenbank speichern und dann die Einbettungen abfragen. Sie erstellen eine Datenbank, füllen sie mit Beispieldaten auf und führen semantische Suchvorgänge für diese Auflistungen aus.
+Um semantische Suchen durchzuführen, müssen Sie zunächst Einbettungsvektoren aus einem Modell generieren, diese in einer Vektordatenbank speichern und dann die Einbettungen abfragen. Sie erstellen eine Datenbank, füllen sie mit Beispieldaten und führen semantische Suchen in diesen Einträgen durch.
 
-Am Ende dieser Übung verfügen Sie über eine flexible Azure Database for PostgreSQL-Serverinstanz mit den aktivierten Erweiterungen `vector` und `azure_ai`. Sie erstellen Einbettungen für die `listings`-Tabelle des [Seattle Airbnb Open Data](https://www.kaggle.com/datasets/airbnb/seattle?select=listings.csv)-Datasets. Sie führen auch semantische Suchvorgänge für diese Auflistungen aus, indem Sie den Einbettungsvektor einer Abfrage generieren und eine Vektorkosinus-Entfernungssuche durchführen.
+Am Ende dieser Übung verfügen Sie über eine Instanz von Azure Database for PostgreSQL – Flexibler Server mit aktivierten Erweiterungen `vector` und `azure_ai`. Sie werden Einbettungen für die [Seattle Airbnb Open Data](https://www.kaggle.com/datasets/airbnb/seattle?select=listings.csv)-Tabelle des Datensatzes `listings` generieren. Sie werden auch semantische Suchen nach diesen Einträgen durchführen, indem Sie den Einbettungsvektor einer Abfrage erstellen und eine Vektor-Kosinus-Distanzsuche durchführen.
 
 ## Vor der Installation
 
-Hierfür benötigen Sie ein [Azure-Abonnement](https://azure.microsoft.com/free) mit Administratorrechten.
+Sie benötigen ein [Azure-Abonnement](https://azure.microsoft.com/free) mit administrativen Rechten und müssen für den Azure OpenAI-Zugang in diesem Abonnement zugelassen sein. Wenn Sie Zugriff auf Azure OpenAI benötigen, bewerben Sie sich auf der Seite [Eingeschränkter Zugriff auf Azure OpenAI](https://learn.microsoft.com/legal/cognitive-services/openai/limited-access).
 
 ### Bereitstellen von Ressourcen in Ihrem Azure-Abonnement
 
-Dieser Schritt führt Sie durch die Verwendung von Azure CLI-Befehlen aus der Azure Cloud Shell, um eine Ressourcengruppe zu erstellen und ein Bicep-Skript auszuführen, um die Azure-Dienste bereitzustellen, die zum Abschließen dieser Übung in Ihrem Azure-Abonnement erforderlich sind.
+Dieser Schritt führt Sie durch die Verwendung von Azure CLI-Befehlen aus der Azure Cloud Shell, um eine Ressourcengruppe zu erstellen und ein Bicep-Skript auszuführen, um die für diese Übung erforderlichen Azure-Services in Ihrem Azure-Abonnement bereitzustellen.
 
-> **Hinweis**: Wenn Sie mehrere Module in diesem Lernpfad absolvieren, können Sie die Azure-Umgebung gemeinsam nutzen. In diesem Fall müssen Sie diesen Schritt der Ressourcenbereitstellung nur einmal ausführen.
+> **Hinweis**: Wenn Sie mehrere Module in diesem Lernpfad absolvieren, können Sie die Azure-Umgebung für alle Module gemeinsam nutzen. In diesem Fall müssen Sie diesen Schritt der Ressourcenzuteilung nur einmal ausführen.
 
 1. Öffnen Sie einen Webbrowser, und navigieren Sie zum [Azure-Portal](https://portal.azure.com/).
 
 2. Wählen Sie das Symbol **Cloud Shell** in der Symbolleiste des Azure-Portals aus, um einen neuen [Cloud Shell](https://learn.microsoft.com/azure/cloud-shell/overview)-Bereich am unteren Rand Ihres Browserfensters zu öffnen.
 
-    ![Screenshot der Azure-Symbolleiste mit dem Cloud Shell-Symbol, das durch einen roten Rahmen hervorgehoben ist.](media/13-portal-toolbar-cloud-shell.png)
+    ![Screenshot der Azure-Symbolleiste mit dem Cloud Shell-Symbol, das durch eine rote Box hervorgehoben ist.](media/13-portal-toolbar-cloud-shell.png)
 
     Wählen Sie bei Aufforderung die erforderlichen Optionen aus, um eine *Bash*-Shell zu öffnen. Wenn Sie zuvor eine *PowerShell*-Konsole verwendet haben, wechseln Sie zu einer *Bash*-Shell.
 
@@ -34,34 +34,34 @@ Dieser Schritt führt Sie durch die Verwendung von Azure CLI-Befehlen aus der Az
     git clone https://github.com/MicrosoftLearning/mslearn-postgresql.git
     ```
 
-4. Als Nächstes führen Sie drei Befehle aus, um Variablen zu definieren und so die redundante Eingabe zu reduzieren, wenn Sie Azure-CLI-Befehle zum Erstellen von Azure-Ressourcen verwenden. Die Variablen stehen für den Namen, den Sie Ihrer Ressourcengruppe zuweisen (`RG_NAME`), für die Azure-Region (`REGION`), in der die Ressourcen bereitgestellt werden, und für ein zufällig generiertes Kennwort für den PostgreSQL-Admin-Login (`ADMIN_PASSWORD`).
+4. Als Nächstes führen Sie drei Befehle aus, um Variablen zu definieren und so die redundante Eingabe zu reduzieren, wenn Sie Azure-CLI-Befehle zum Erstellen von Azure-Ressourcen verwenden. Die Variablen stehen für den Namen, den Sie Ihrer Ressourcengruppe zuweisen (`RG_NAME`), für die Azure-Region (`REGION`), in der die Ressourcen bereitgestellt werden und für ein zufällig generiertes Kennwort für den PostgreSQL-Administrator-Login (`ADMIN_PASSWORD`).
 
-    Im ersten Befehl ist die der entsprechenden Variablen zugewiesene Region `eastus`, aber Sie können sie auch durch einen Ort Ihrer Voreinstellung ersetzen. Wenn Sie jedoch die Standardeinstellung ersetzen, müssen Sie eine andere [Azure-Region auswählen, die die abstrakte Zusammenfassung unterstützt](https://learn.microsoft.com/azure/ai-services/language-service/summarization/region-support), um sicherzustellen, dass Sie alle Aufgaben in den Modulen in diesem Lernpfad erledigen können.
+    Im ersten Befehl ist die Region, die der entsprechenden Variablen zugewiesen ist, `eastus`, aber Sie können sie auch durch einen Ort Ihrer Wahl ersetzen. Wenn Sie jedoch die Standardeinstellung ersetzen, müssen Sie eine andere [Azure-Region auswählen, die die abstrakte Zusammenfassung unterstützt](https://learn.microsoft.com/azure/ai-services/language-service/summarization/region-support), um sicherzustellen, dass Sie alle Aufgaben in den Modulen in diesem Lernpfad erledigen können.
 
     ```bash
     REGION=eastus
     ```
 
-    Mit dem folgenden Befehl weisen Sie den Namen für die Ressourcengruppe zu, die alle in dieser Übung verwendeten Ressourcen enthalten wird. Der Name der Ressourcengruppe, die der entsprechenden Variablen zugewiesen ist, lautet `rg-learn-postgresql-ai-$REGION`, wobei `$REGION` der Speicherort ist, den Sie oben angegeben haben. Sie können ihn jedoch in einen beliebigen anderen Ressourcengruppennamen ändern, der Ihren Vorstellungen entspricht.
+    Mit dem folgenden Befehl weisen Sie den Namen für die Ressourcengruppe zu, die alle in dieser Übung verwendeten Ressourcen enthalten wird. Der Name der Ressourcengruppe, der der entsprechenden Variablen zugewiesen ist, lautet `rg-learn-postgresql-ai-$REGION`, wobei `$REGION` der Ort ist, den Sie oben angegeben haben. Sie können den Namen jedoch auch in einen anderen Namen für die Ressourcengruppe ändern, der Ihren Wünschen entspricht.
 
     ```bash
     RG_NAME=rg-learn-postgresql-ai-$REGION
     ```
 
-    Der letzte Befehl generiert nach dem Zufallsprinzip ein Kennwort für das PostgreSQL-Admin-Login. **Kopieren Sie sie** an einen sicheren Ort, um sie später für die Verbindung mit ihrem flexiblen PostgreSQL-Server zu verwenden.
+    Der letzte Befehl generiert nach dem Zufallsprinzip ein Kennwort für das PostgreSQL-Admin-Login. **Stellen Sie sicher, dass Sie sie** an einen sicheren Ort kopieren, um sie später für die Verbindung mit Ihrem PostgreSQL – Flexibler Server zu verwenden.
 
     ```bash
     a=()
     for i in {a..z} {A..Z} {0..9}; 
         do
         a[$RANDOM]=$i
-        done
+    done
     ADMIN_PASSWORD=$(IFS=; echo "${a[*]::18}")
     echo "Your randomly generated PostgreSQL admin user's password is:"
     echo $ADMIN_PASSWORD
     ```
 
-5. Wenn Sie Zugriff auf mehr als ein Azure-Abonnement haben und Ihr Standardabonnement nicht das Abonnement ist, in dem Sie die Ressourcengruppe und andere Ressourcen für diese Übung erstellen möchten, führen Sie diesen Befehl aus, um das entsprechende Abonnement festzulegen, und ersetzen Sie dabei das Token `<subscriptionName|subscriptionId>` durch den Namen oder die ID des Abonnements, das Sie verwenden möchten:
+5. Wenn Sie Zugriff auf mehr als ein Azure-Abonnement haben und Ihr Standardabonnement nicht dasjenige ist, in dem Sie die Ressourcengruppe und andere Ressourcen für diese Übung erstellen möchten, führen Sie diesen Befehl aus, um das entsprechende Abonnement festzulegen. Ersetzen Sie dabei das Token `<subscriptionName|subscriptionId>` durch den Namen oder die ID des Abonnements, das Sie verwenden möchten:
 
     ```azurecli
     az account set --subscription <subscriptionName|subscriptionId>
@@ -79,15 +79,15 @@ Dieser Schritt führt Sie durch die Verwendung von Azure CLI-Befehlen aus der Az
     az deployment group create --resource-group $RG_NAME --template-file "mslearn-postgresql/Allfiles/Labs/Shared/deploy.bicep" --parameters restore=false adminLogin=pgAdmin adminLoginPassword=$ADMIN_PASSWORD
     ```
 
-    Das Bicep-Bereitstellungsskript stellt die Azure-Dienste bereit, die zum Abschließen dieser Übung in Ihrer Ressourcengruppe erforderlich sind. Die bereitgestellten Ressourcen umfassen eine flexible Azure-Datenbank für PostgreSQL-Server, Azure OpenAI und ein Azure KI Language-Dienst. Das Bicep-Skript führt auch einige Konfigurationsschritte aus, wie z. B. das Hinzufügen der `azure_ai`- und `vector`-Erweiterungen zur _Positivliste_ des PostgreSQL-Servers (über den `azure.extensions` Server-Parameter), das Erstellen einer Datenbank mit dem Namen `rentals` auf dem Server und das Hinzufügen einer Bereitstellung mit dem Namen `embedding` unter Verwendung des `text-embedding-ada-002`-Modells zu Ihrem Azure OpenAI Service. Beachten Sie, dass die Bicep-Datei von allen Modulen in diesem Lernpfad gemeinsam genutzt wird, sodass Sie möglicherweise nur einige der bereitgestellten Ressourcen in einigen Übungen verwenden.
+    Das Bicep-Bereitstellungsskript stellt die für diese Übung erforderlichen Azure-Service in Ihrer Ressourcengruppe bereit. Zu den bereitgestellten Ressourcen gehören eine Azure Database for PostgreSQL – Flexibler Server, Azure OpenAI und ein Azure KI Language-Service. Das Bicep-Skript führt auch einige Konfigurationsschritte aus, wie z. B. das Hinzufügen der `azure_ai`- und `vector`-Erweiterungen zur _Positivliste_ des PostgreSQL-Servers (über den `azure.extensions`-Server-Parameter), das Erstellen einer Datenbank mit dem Namen `rentals` auf dem Server und das Hinzufügen einer Bereitstellung mit dem Namen `embedding` unter Verwendung des `text-embedding-ada-002`-Modells zu Ihrem Azure OpenAI Service. Beachten Sie, dass die Bicep-Datei von allen Modulen in diesem Lernpfad gemeinsam genutzt wird, sodass Sie möglicherweise nur einige der bereitgestellten Ressourcen in einigen Übungen verwenden.
 
     Die Bereitstellung dauert in der Regel mehrere Minuten. Sie können es von der Cloud Shell aus überwachen oder zur Seite **Bereitstellungen** für die oben erstellte Ressourcengruppe navigieren und dort den Bereitstellungsfortschritt beobachten.
 
-8. Schließen Sie den Cloud Shell-Bereich, sobald die Ressourcenbereitstellung abgeschlossen ist.
+8. Schließen Sie den Cloud Shell-Bereich, sobald Ihre Ressourcenbereitstellung abgeschlossen ist.
  
 ### Problembehandlung bei der Bereitstellung
 
-Beim Ausführen des Bicep-Bereitstellungsskripts treten möglicherweise einige Fehler auf.
+Beim Ausführen des Bicep-Bereitstellungsskripts können einige Fehler auftreten.
 
 - Wenn Sie zuvor das Bicep-Bereitstellungsskript für diesen Lernpfad ausgeführt und anschließend die Ressourcen gelöscht haben, erhalten Sie möglicherweise eine Fehlermeldung wie die folgende, wenn Sie versuchen, das Skript innerhalb von 48 Stunden nach dem Löschen der Ressourcen erneut auszuführen:
 
@@ -98,15 +98,15 @@ Beim Ausführen des Bicep-Bereitstellungsskripts treten möglicherweise einige F
     {"code": "FlagMustBeSetForRestore", "message": "An existing resource with ID '/subscriptions/{subscriptionId}/resourceGroups/rg-learn-postgresql-ai-eastus/providers/Microsoft.CognitiveServices/accounts/{accountName}' has been soft-deleted. To restore the resource, you must specify 'restore' to be 'true' in the property. If you don't want to restore existing resource, please purge it first."}
     ```
 
-    Wenn Sie diese Meldung erhalten, ändern Sie den obigen Befehl `azure deployment group create`, um den Parameter `restore` auf `true` zu setzen, und führen Sie ihn erneut aus.
+    Wenn Sie diese Meldung erhalten, ändern Sie den obigen Befehl `azure deployment group create`, um den Parameter `restore` auf `true` zu setzen und führen Sie ihn erneut aus.
 
-- Wenn die Bereitstellung bestimmter Ressourcen in der ausgewählten Region eingeschränkt ist, müssen Sie die Variable `REGION` auf einen anderen Speicherort festlegen und die Befehle erneut ausführen, um die Ressourcengruppe zu erstellen und das Bicep-Bereitstellungsskript auszuführen.
+- Wenn die ausgewählte Region für die Bereitstellung bestimmter Ressourcen eingeschränkt ist, müssen Sie die Variable `REGION` auf einen anderen Speicherort setzen und die Befehle erneut ausführen, um die Ressourcengruppe zu erstellen und das Bicep-Bereitstellungsskript auszuführen.
 
     ```bash
     {"status":"Failed","error":{"code":"DeploymentFailed","target":"/subscriptions/{subscriptionId}/resourceGroups/{resourceGrouName}/providers/Microsoft.Resources/deployments/{deploymentName}","message":"At least one resource deployment operation failed. Please list deployment operations for details. Please see https://aka.ms/arm-deployment-operations for usage details.","details":[{"code":"ResourceDeploymentFailure","target":"/subscriptions/{subscriptionId}/resourceGroups/{resourceGrouName}/providers/Microsoft.DBforPostgreSQL/flexibleServers/{serverName}","message":"The resource write operation failed to complete successfully, because it reached terminal provisioning state 'Failed'.","details":[{"code":"RegionIsOfferRestricted","message":"Subscriptions are restricted from provisioning in this region. Please choose a different region. For exceptions to this rule please open a support request with Issue type of 'Service and subscription limits'. See https://review.learn.microsoft.com/en-us/azure/postgresql/flexible-server/how-to-request-quota-increase for more details."}]}]}}
     ```
 
-- Wenn das Skript aufgrund der Anforderung, die Vereinbarung über die verantwortungsvolle KI zu akzeptieren, keine KI-Ressource erstellen kann, kann der folgende Fehler auftreten. Verwenden Sie in diesem Fall die Benutzeroberfläche des Azure-Portals, um eine Azure KI Services-Ressource zu erstellen, und führen Sie das Bereitstellungsskript dann erneut aus.
+- Wenn das Skript aufgrund der Anforderung, die Vereinbarung über die verantwortungsvolle KI zu akzeptieren, keine KI-Ressource erstellen kann, kann der folgende Fehler auftreten. Verwenden Sie in diesem Fall die Benutzeroberfläche des Azure-Portals, um eine Azure-KI-Services-Ressource zu erstellen und führen Sie das Bereitstellungsskript dann erneut aus.
 
     ```bash
     {"code": "InvalidTemplateDeployment", "message": "The template deployment 'deploy' is not valid according to the validation procedure. The tracking id is 'f8412edb-6386-4192-a22f-43557a51ea5f'. See inner errors for details."}
@@ -115,37 +115,37 @@ Beim Ausführen des Bicep-Bereitstellungsskripts treten möglicherweise einige F
     {"code": "ResourceKindRequireAcceptTerms", "message": "This subscription cannot create TextAnalytics until you agree to Responsible AI terms for this resource. You can agree to Responsible AI terms by creating a resource through the Azure Portal then trying again. For more detail go to https://go.microsoft.com/fwlink/?linkid=2164190"}
     ```
 
-## Herstellen einer Verbindung mit der Datenbank mithilfe von psql in Azure Cloud Shell
+## Verbinden Sie sich mit Ihrer Datenbank mit psql in der Azure Cloud Shell
 
-Bei dieser Aufgabe stellen Sie über das [psql-Befehlszeilenprogramm](https://www.postgresql.org/docs/current/app-psql.html) von der [Azure Cloud Shell](https://learn.microsoft.com/azure/cloud-shell/overview) aus eine Verbindung zur `rentals`-Datenbank auf Ihrem Azure Database for PostgreSQL-Server her.
+In dieser Aufgabe stellen Sie eine Verbindung zur `rentals`-Datenbank auf Ihrem Azure Database for PostgreSQL-Server her, indem Sie das [psql Befehlszeilendienstprogramm](https://www.postgresql.org/docs/current/app-psql.html) aus der [Azure Cloud Shell](https://learn.microsoft.com/azure/cloud-shell/overview) verwenden.
 
-1. Navigieren Sie im [Azure-Portal](https://portal.azure.com/) zu Ihrer neu erstellten Azure Database for PostgreSQL – Flexibler Server.
+1. Navigieren Sie im [Azure-Portal](https://portal.azure.com/) zu Ihrer neu erstellten Azure-Datenbank für PostgreSQL – Flexibler Server.
 
-2. Wählen Sie im Ressourcenmenü unter **Einstellungen** die Option **Datenbanken** und wählen Sie **Verbinden** für die Datenbank `rentals`.
+2. Wählen Sie im Ressourcenmenü unter **Einstellungen** die Option **Datenbanken** und dann **Verbinden** für die Datenbank `rentals`.
 
-    ![Screenshot der Azure Database for PostgreSQL-Datenbankseite. Datenbanken und Verbinden für die Mietdatenbank werden in roten Feldern hervorgehoben.](media/13-postgresql-rentals-database-connect.png)
+    ![Screenshot der Seite Azure-Datenbank für PostgreSQL-Datenbanken. Datenbanken und Verbinden für die Vermietungsdatenbank sind durch rote Boxen hervorgehoben.](media/13-postgresql-rentals-database-connect.png)
 
-3. Geben Sie beim Prompt „Kennwort für den Benutzer pgAdmin“ in der Cloud Shell das zufällig generierte Kennwort für die **pgAdmin**-Anmeldung ein.
+3. Geben Sie bei der Eingabeaufforderung „Kennwort für den Benutzer pgAdmin“ in der Cloud Shell das zufällig generierte Kennwort für die Anmeldung **pgAdmin** ein.
 
-    Sobald Sie angemeldet sind, wird der `psql`-Prompt für die `rentals`-Datenbank angezeigt.
+    Sobald Sie angemeldet sind, wird die Eingabeaufforderung `psql` für die Datenbank `rentals` angezeigt.
 
 4. Im weiteren Verlauf dieser Übung arbeiten Sie weiterhin in der Cloud Shell. Daher kann es hilfreich sein, den Bereich in Ihrem Browserfenster zu erweitern, indem Sie die Schaltfläche **Maximieren** oben rechts im Bereich wählen.
 
     ![Screenshot des Azure Cloud Shell-Fensters mit der Schaltfläche „Maximieren“, die durch eine rote Box hervorgehoben ist.](media/13-azure-cloud-shell-pane-maximize.png)
 
-## Setup: Konfigurieren von Erweiterungen
+## Setup: Erweiterungen konfigurieren
 
-Um Vektoren zu speichern und abzufragen und um Einbettungen zu erzeugen, müssen Sie zwei Erweiterungen für einen flexiblen Azure Database for PostgreSQL-Server zulassen und aktivieren: `vector` und `azure_ai`.
+Um Vektoren zu speichern und abzufragen und um Einbettungen zu erzeugen, müssen Sie zwei Erweiterungen für Azure Database for PostgreSQL – Flexibler Server zulassen und aktivieren: `vector` und `azure_ai`.
 
-1. Um beide Erweiterungen zuzulassen, fügen Sie `vector` und `azure_ai` zum Server-Parameter `azure.extensions` hinzu, wie in den Anweisungen unter [Wie man PostgreSQL-Erweiterungen verwendet](https://learn.microsoft.com/en-us/azure/postgresql/flexible-server/concepts-extensions#how-to-use-postgresql-extensions) beschrieben.
+1. Um beide Erweiterungen zuzulassen, fügen Sie `vector` und `azure_ai` zum Serverparameter `azure.extensions` hinzu, wie in [Wie man PostgreSQL-Erweiterungen verwendet](https://learn.microsoft.com/en-us/azure/postgresql/flexible-server/concepts-extensions#how-to-use-postgresql-extensions) beschrieben.
 
-2. Führen Sie den folgenden SQL-Befehl aus, um die Erweiterung `vector` zu aktivieren. Ausführliche Anweisungen finden Sie unter [Aktivierung und Verwendung von `pgvector` auf Azure Database for PostgreSQL – Flexibler Server](https://learn.microsoft.com/en-us/azure/postgresql/flexible-server/how-to-use-pgvector#enable-extension).
+2. Führen Sie den folgenden SQL-Befehl aus, um die Erweiterung `vector` zu aktivieren. Detaillierte Anweisungen finden Sie unter [Aktivierung und Verwendung von `pgvector` auf Azure Database for PostgreSQL – Flexibler Server](https://learn.microsoft.com/en-us/azure/postgresql/flexible-server/how-to-use-pgvector#enable-extension).
 
     ```sql
     CREATE EXTENSION vector;
     ```
 
-3. Um die Erweiterung `azure_ai` zu aktivieren, führen Sie den folgenden SQL-Befehl aus. Sie benötigen den Endpunkt und den API-Schlüssel für die Azure OpenAI-Ressource. Ausführliche Anweisungen finden Sie unter [Aktivieren der `azure_ai`-Erweiterung](https://learn.microsoft.com/en-us/azure/postgresql/flexible-server/generative-ai-azure-overview#enable-the-azure_ai-extension).
+3. Um die Erweiterung `azure_ai` zu aktivieren, führen Sie den folgenden SQL-Befehl aus. Sie benötigen den Endpunkt und den API-Schlüssel für die Azure OpenAI-Ressource. Detaillierte Anweisungen finden Sie unter [Aktivieren Sie die `azure_ai`-Erweiterung](https://learn.microsoft.com/en-us/azure/postgresql/flexible-server/generative-ai-azure-overview#enable-the-azure_ai-extension).
 
     ```sql
     CREATE EXTENSION azure_ai;
@@ -155,9 +155,9 @@ Um Vektoren zu speichern und abzufragen und um Einbettungen zu erzeugen, müssen
 
 ## Füllen der Datenbank mit Beispieldaten
 
-Bevor Sie sich mit der `azure_ai`-Erweiterung befassen, fügen Sie der `rentals`-Datenbank einige Tabellen hinzu und füllen sie mit Beispieldaten, damit Sie bei der Überprüfung der Funktionalität der Erweiterung mit Informationen arbeiten können.
+Bevor Sie sich mit der `azure_ai`-Erweiterung befassen, fügen Sie der `rentals`-Datenbank einige Tabellen hinzu und füllen sie mit Beispieldaten, damit Sie Informationen haben, mit denen Sie arbeiten können, wenn Sie die Funktionen der Erweiterung prüfen.
 
-1. Führen Sie die folgenden Befehle aus, um die Tabellen `listings` und `reviews` zu erstellen, in denen die Daten für die Auflistung der Mietobjekte und die Bewertungen der Kundschaft gespeichert werden:
+1. Führen Sie die folgenden Befehle aus, um die Tabellen `listings` und `reviews` zu erstellen, in denen die Daten für die Auflistung von Mietobjekten und die Kundenrezensionen gespeichert werden:
 
     ```sql
     DROP TABLE IF EXISTS listings;
@@ -192,7 +192,7 @@ Bevor Sie sich mit der `azure_ai`-Erweiterung befassen, fügen Sie der `rentals`
 
     Die Befehlsausgabe sollte `COPY 50` lauten, was bedeutet, dass 50 Zeilen aus der CSV-Datei in die Tabelle geschrieben wurden.
 
-3. Führen Sie schließlich den folgenden Befehl aus, um die Bewertungen der Kundschaft in die Tabelle `reviews` zu laden:
+3. Führen Sie abschließend den folgenden Befehl aus, um Kundenrezensionen in die Tabelle `reviews` zu laden:
 
     ```sql
     \COPY reviews FROM 'mslearn-postgresql/Allfiles/Labs/Shared/reviews.csv' CSV HEADER
@@ -204,9 +204,9 @@ Um Ihre Probendaten zurückzusetzen, können Sie `DROP TABLE listings` ausführe
 
 ## Erstellen und Speichern von Einbettungsvektoren
 
-Da wir nun einige Beispieldaten haben, ist es an der Zeit, die Einbettungsvektoren zu generieren und zu speichern. Die `azure_ai`-Erweiterung erleichtert das Aufrufen der Azure OpenAI-Einbettungs-API.
+Nun, da wir einige Beispieldaten haben, ist es an der Zeit, die Einbettungsvektoren zu erzeugen und zu speichern. Die Erweiterung `azure_ai` macht den Aufruf der Azure OpenAI Einbettungs-API einfach.
 
-1. Fügen Sie die Einbettungsvektorspalte hinzu.
+1. Fügen Sie die Spalte für den Einbettungsvektor hinzu.
 
     Das Modell `text-embedding-ada-002` ist so konfiguriert, dass es 1.536 Dimensionen zurückgibt, verwenden Sie also diese Größe für die Vektorspalte.
 
@@ -214,7 +214,7 @@ Da wir nun einige Beispieldaten haben, ist es an der Zeit, die Einbettungsvektor
     ALTER TABLE listings ADD COLUMN listing_vector vector(1536);
     ```
 
-1. Erzeugen Sie einen Einbettungsvektor für die Beschreibung jedes Eintrags, indem Sie Azure OpenAI über die benutzerdefinierte Funktion „create_embeddings“ aufrufen, die von der Erweiterung „azure_ai“ implementiert wird:
+1. Erzeugen Sie einen Einbettungsvektor für die Beschreibung jedes Eintrags, indem Sie Azure OpenAI über die benutzerdefinierte Funktion create_embeddings aufrufen, die von der Erweiterung azure_ai implementiert wird:
 
     ```sql
     UPDATE listings
@@ -222,7 +222,7 @@ Da wir nun einige Beispieldaten haben, ist es an der Zeit, die Einbettungsvektor
     WHERE listing_vector IS NULL;
     ```
 
-    Beachten Sie, dass dies je nach verfügbarem Kontingent mehrere Minuten dauern kann.
+    Beachten Sie, dass dies je nach verfügbarem Kontingent einige Minuten dauern kann.
 
 1. Sehen Sie sich einen Beispielvektor an, indem Sie diese Abfrage ausführen:
 
@@ -230,7 +230,7 @@ Da wir nun einige Beispieldaten haben, ist es an der Zeit, die Einbettungsvektor
     SELECT listing_vector FROM listings LIMIT 1;
     ```
 
-    Sie erhalten ein ähnliches Ergebnis, aber mit 1.536 Vektorspalten:
+    Sie erhalten ein ähnliches Ergebnis, allerdings mit 1536 Vektorspalten:
 
     ```sql
     postgres=> SELECT listing_vector FROM listings LIMIT 1;
@@ -238,30 +238,30 @@ Da wir nun einige Beispieldaten haben, ist es an der Zeit, die Einbettungsvektor
     listing_vector | [-0.0018742813,-0.04530062,0.055145424, ... ]
     ```
 
-## Ausführen einer semantischen Suchabfrage
+## Durchführen einer semantischen Suchanfrage
 
-Nachdem Sie nun Daten aufgelistet haben, die mit Einbettungsvektoren erweitert wurden, ist es an der Zeit, eine semantische Suchabfrage auszuführen. Dazu ermitteln Sie den Einbettungsvektor für die Abfragezeichenfolge und führen dann eine Kosinussuche durch, um die Einträge zu finden, deren Beschreibungen der Anfrage semantisch am ähnlichsten sind.
+Nachdem Sie die Auflistungsdaten mit Einbettungsvektoren angereichert haben, ist es an der Zeit, eine semantische Suchanfrage zu starten. Dazu holen Sie sich den Einbettungsvektor für die Abfragezeichenfolge und führen dann eine Kosinussuche durch, um die Einträge zu finden, deren Beschreibungen der Abfrage semantisch am ähnlichsten sind.
 
-1. Generieren Sie die Einbettung für die Abfragezeichenfolge.
+1. Erzeugen Sie die Einbettung für die Abfragezeichenfolge.
 
     ```sql
     SELECT azure_openai.create_embeddings('embedding', 'bright natural light');
     ```
 
-    Das Ergebnis könnte in etwa wie folgt aussehen:
+    Sie erhalten dann ein Ergebnis wie dieses:
 
     ```sql
     -[ RECORD 1 ]-----+-- ...
     create_embeddings | {-0.0020871465,-0.002830255,0.030923981, ...}
     ```
 
-1. Verwenden Sie die Einbettung in einer Kosinussuche (`<=>` steht für den Vorgang der Kosinusdistanz), um die 10 der Abfrage am ähnlichsten erscheinenden Einträge zu finden.
+1. Verwenden Sie die Einbettung in einer Kosinussuche (`<=>` steht für die Kosinus-Distanz-Operation), um die 10 ähnlichsten Einträge zur Abfrage zu finden.
 
     ```sql
     SELECT id, name FROM listings ORDER BY listing_vector <=> azure_openai.create_embeddings('embedding', 'bright natural light')::vector LIMIT 10;
     ```
 
-    Sie erhalten dann ein ähnliches Ergebnis wie dieses. Die Ergebnisse können variieren, da Einbettungsvektoren nicht garantiert deterministisch sind:
+    Sie erhalten dann ein ähnliches Ergebnis wie dieses. Die Ergebnisse können variieren, da die Einbettungsvektoren nicht garantiert deterministisch sind:
 
     ```sql
         id    |                name                
@@ -278,13 +278,13 @@ Nachdem Sie nun Daten aufgelistet haben, die mit Einbettungsvektoren erweitert w
      5578943  | Madrona Studio w/Private Entrance
     ```
 
-1. Sie können die `description`-Spalte auch projizieren, um den Text der übereinstimmenden Zeilen zu lesen, deren Beschreibungen semantisch ähnlich waren. Diese Abfrage gibt beispielsweise die beste Übereinstimmung zurück:
+1. Sie können auch die Spalte `description` projizieren, um den Text der übereinstimmenden Zeilen lesen zu können, deren Beschreibungen semantisch ähnlich waren. Diese Abfrage gibt zum Beispiel die beste Übereinstimmung zurück:
 
     ```sql
     SELECT id, description FROM listings ORDER BY listing_vector <=> azure_openai.create_embeddings('embedding', 'bright natural light')::vector LIMIT 1;
     ```
 
-    Damit wird etwa Folgendes ausgegeben: 
+    Damit wird etwa Folgendes ausgegeben:
 
     ```sql
        id    | description
@@ -296,15 +296,15 @@ Um die semantische Suche intuitiv zu verstehen, beachten Sie, dass die Beschreib
 
 ## Arbeit überprüfen
 
-Nachdem Sie die obigen Schritte durchgeführt haben, enthält die `listings`-Tabelle Beispieldaten von [Seattle Airbnb Open Data](https://www.kaggle.com/datasets/airbnb/seattle/data?select=listings.csv) auf Kaggle. Die Auflistungen wurden durch Einbettungsvektoren erweitert, um semantische Suchvorgänge auszuführen.
+Nachdem Sie die obigen Schritte durchgeführt haben, enthält die `listings`-Tabelle Beispieldaten von [Seattle Airbnb Open Data](https://www.kaggle.com/datasets/airbnb/seattle/data?select=listings.csv) auf Kaggle. Die Listen wurden mit Einbettungsvektoren angereichert, um semantische Suchen durchzuführen.
 
-1. Bestätigen Sie, dass die Listings-Tabelle vier Spalten hat: `id`, `name`, `description` und `listing_vector`.
+1. Bestätigen Sie, dass die Tabelle Listings vier Spalten hat: `id`, `name`, `description` und `listing_vector`.
 
     ```sql
     \d listings
     ```
 
-    Es sollte etwa so aussehen:
+    Es sollte etwa Folgendes ausgegeben werden:
 
     ```sql
                             Table "public.listings"
@@ -318,13 +318,13 @@ Nachdem Sie die obigen Schritte durchgeführt haben, enthält die `listings`-Tab
         "listings_pkey" PRIMARY KEY, btree (id)
     ```
 
-1. Vergewissern Sie sich, dass mindestens eine Zeile eine „listing_vector-Spalte aufgefüllt hat.
+1. Vergewissern Sie sich, dass mindestens eine Zeile eine ausgefüllte listing_vector-Spalte hat.
 
     ```sql
     SELECT COUNT(*) > 0 FROM listings WHERE listing_vector IS NOT NULL;
     ```
 
-    Das Ergebnis muss ein `t`, welches „true“ (wahr) bedeutet, anzeigen. Ein Hinweis darauf, dass mindestens eine Zeile mit Einbettungen der entsprechenden Beschreibungsspalte vorhanden ist:
+    Das Ergebnis muss ein `t`, also wahr, anzeigen. Ein Hinweis darauf, dass es mindestens eine Zeile mit Einbettungen der entsprechenden Beschreibungsspalte gibt:
 
     ```sql
     ?column? 
@@ -333,13 +333,13 @@ Nachdem Sie die obigen Schritte durchgeführt haben, enthält die `listings`-Tab
     (1 row)
     ```
 
-    Bestätigen Sie, dass der Einbettungsvektor 1.536 Dimensionen hat:
+    Bestätigen Sie, dass der Einbettungsvektor 1536 Dimensionen hat:
 
     ```sql
     SELECT vector_dims(listing_vector) FROM listings WHERE listing_vector IS NOT NULL LIMIT 1;
     ```
 
-    Ergebnis:
+    Nachgiebig:
 
     ```sql
     vector_dims 
@@ -348,15 +348,15 @@ Nachdem Sie die obigen Schritte durchgeführt haben, enthält die `listings`-Tab
     (1 row)
     ```
 
-1. Vergewissern Sie sich, dass semantische Suchvorgänge Ergebnisse zurückgeben.
+1. Bestätigen Sie, dass semantische Suchen Ergebnisse liefern.
 
-    Verwenden Sie die Einbettung in eine Kosinussuche und rufen Sie die 10 häufigsten Auflistungen der Abfrage ab.
+    Verwenden Sie die Einbettung in einer Cosinussuche, die die 10 ähnlichsten Angebote zu Ihrer Anfrage ermittelt.
 
     ```sql
     SELECT id, name FROM listings ORDER BY listing_vector <=> azure_openai.create_embeddings('embedding', 'bright natural light')::vector LIMIT 10;
     ```
 
-    Sie erhalten ein Ergebnis wie folgt, je nachdem, welche Zeilen Einbettungsvektoren zugewiesen wurden:
+    Je nachdem, welche Zeilen den Einbettungsvektoren zugewiesen wurden, erhalten Sie ein solches Ergebnis:
 
     ```sql
      id |                name                
@@ -375,16 +375,16 @@ Nachdem Sie die obigen Schritte durchgeführt haben, enthält die `listings`-Tab
 
 ## Bereinigung
 
-Nachdem Sie diese Übung abgeschlossen haben, löschen Sie die Azure-Ressourcen, die Sie erstellt haben. Die Abrechnung basiert auf der konfigurierten Kapazität und nicht auf der Verwendung der Datenbank. Befolgen Sie diese Anweisungen, um Ihre Ressourcengruppe und alle Ressourcen zu löschen, die Sie für diese Übung erstellt haben.
+Sobald Sie diese Übung abgeschlossen haben, löschen Sie die von Ihnen erstellten Azure-Ressourcen. Sie zahlen für die konfigurierte Kapazität, nicht dafür, wie viel die Datenbank genutzt wird. Folgen Sie diesen Anweisungen, um Ihre Ressourcengruppe und alle Ressourcen, die Sie für dieses Lab erstellt haben, zu löschen.
 
-1. Öffnen Sie einen Webbrowser und navigieren Sie zum [Azure-Portal](https://portal.azure.com/). Wählen Sie auf der Startseite **Ressourcengruppen** unter Azure-Dienste aus.
+1. Öffnen Sie einen Webbrowser und navigieren Sie zum [Azure-Portal](https://portal.azure.com/). Wählen Sie auf der Startseite die Option **Ressourcengruppen** unter „Azure-Services“ aus.
 
-    ![Screenshot von Ressourcengruppen, die durch ein rotes Feld unter Azure-Diensten im Azure-Portal hervorgehoben sind.](media/13-azure-portal-home-azure-services-resource-groups.png)
+    ![Screenshot der Ressourcengruppen, die im Azure-Portal unter Azure-Service durch ein rotes Feld hervorgehoben werden.](media/13-azure-portal-home-azure-services-resource-groups.png)
 
-2. Geben Sie in das Suchfeld für ein beliebiges Feld den Namen der Ressourcengruppe ein, die Sie für dieses Lab erstellt haben, und wählen Sie dann Ihre Ressourcengruppe aus der Liste aus.
+2. Geben Sie in das Suchfeld Filter für ein beliebiges Feld den Namen der Ressourcengruppe ein, die Sie für dieses Lab erstellt haben und wählen Sie dann Ihre Ressourcengruppe aus der Liste aus.
 
 3. Wählen Sie auf der Seite **Übersicht** der Ressourcengruppe die Option **Ressourcengruppe löschen** aus.
 
-    ![Screenshot des Übersichtsblatts der Ressourcengruppe mit der Schaltfläche „Ressourcengruppe löschen“, die durch ein rotes Kästchen hervorgehoben ist.](media/13-resource-group-delete.png)
+    ![Screenshot des Übersichtsblatts der Ressourcengruppe, wobei die Schaltfläche „Ressourcengruppe löschen“ durch eine rote Box hervorgehoben ist.](media/13-resource-group-delete.png)
 
-4. Geben Sie im Bestätigungsdialogfeld den Namen der Ressourcengruppe ein, die Sie löschen möchten, und wählen Sie dann **Löschen** aus.
+4. Geben Sie im Bestätigungsdialog zur Bestätigung den Namen der Ressourcengruppe ein, die Sie löschen möchten und wählen Sie dann **Löschen**.

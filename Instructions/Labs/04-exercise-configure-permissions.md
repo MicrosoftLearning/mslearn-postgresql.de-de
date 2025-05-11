@@ -56,7 +56,7 @@ So installieren Sie Azure Data Studio für Azure Database for PostgreSQL:
 1. Nun wird die Lizenzvereinbarung angezeigt. Lesen und **akzeptieren Sie die Vereinbarung**, und klicken sie auf **Weiter**.
 1. Wählen Sie unter **Weitere Aufgaben auswählen** die Option **Zu PATH hinzufügen** sowie und alle weiteren erforderlichen Ergänzungen aus. Wählen Sie **Weiter** aus.
 1. Das Dialogfeld **Bereit für die Installation** wird angezeigt. Überprüfen Sie Ihre Einstellungen. Klicken Sie auf **Zurück**, um Änderungen vorzunehmen, oder klicken Sie auf **Installieren**.
-1. Das Dialogfeld **Completing the Azure Data Studio Setup Wizard** (Der Setup-Assistent für Azure Data Studio wird abgeschlossen) wird angezeigt. Wählen Sie **Fertig stellen** aus. Azure Data Studio wird gestartet.
+1. Das Dialogfeld **Completing the Azure Data Studio Setup Wizard** (Der Setup-Assistent für Azure Data Studio wird abgeschlossen) wird angezeigt. Wählen Sie **Fertig stellen**aus. Azure Data Studio wird gestartet.
 
 ### Installieren der PostgreSQL-Erweiterung
 
@@ -81,7 +81,7 @@ So installieren Sie Azure Data Studio für Azure Database for PostgreSQL:
 
 ### Erstellen der Zoodatenbank
 
-1. Navigieren Sie entweder zu dem Ordner mit Ihren Übungsskriptdateien oder laden Sie die Datei **Lab2_ZooDb.sql** von [MSLearn PostgreSQL Labs](https://github.com/MicrosoftLearning/mslearn-postgresql/Allfiles/Labs/02) herunter.
+1. Navigieren Sie entweder zu dem Ordner mit Ihren Übungsskriptdateien oder laden Sie die Datei **Lab2_ZooDb.sql** von [MSLearn PostgreSQL Labs](https://github.com/MicrosoftLearning/mslearn-postgresql/blob/main/Allfiles/Labs/02) herunter.
 1. Öffnen Sie Azure Data Studio, falls das Programm noch nicht geöffnet ist.
 1. Klicken Sie auf **Datei**, anschließend auf **Datei öffnen**, und navigieren Sie zu dem Ordner, in dem Sie die Skripts gespeichert haben. Wählen Sie **../Allfiles/Labs/02/Lab2_ZooDb.sql** und **Öffnen**. Wenn eine Vertrauensstellungswarnung angezeigt wird, wählen Sie **"Öffnen**" aus.
 1. Führen Sie das Skript aus. Die zoodb-Datenbank wird erstellt.

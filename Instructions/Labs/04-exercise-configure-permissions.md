@@ -12,60 +12,60 @@ In den Übungen dieses Labs weisen Sie rollenbasierte Zugriffssteuerungsrollen (
 
 Für diese Übung benötigen Sie ein eigenes Azure-Abonnement. Wenn Sie nicht über ein Azure-Abonnement verfügen, können Sie ein [kostenloses Azure-Testkonto](https://azure.microsoft.com/free) erstellen.
 
-Darüber hinaus müssen Sie Folgendes auf Ihrem Computer installiert haben:
+Zusätzlich muss Folgendes auf Ihrem Computer installiert sein:
 
 - Visual Studio Code.
-- Postgres Visual Studio Code-Erweiterung von Microsoft.
+- Postgres Visual Studio Code-Erweiterung von Microsoft
 - Azure-Befehlszeilenschnittstelle.
 - Git.
 
 ## Erstellen der Übungsumgebung
 
-In diesen und späteren Übungen verwenden Sie ein Bicep-Skript, um die Azure-Datenbank for PostgreSQL – Flexibler Server und andere Ressourcen in Ihrem Azure-Abonnement bereitzustellen. Die Bicep-Skripts befinden sich im `/Allfiles/Labs/Shared`-Ordner des zuvor geklonten GitHub-Repositorys.
+In diesen und späteren Übungen verwenden Sie ein Bicep-Skript, um die Azure Database for PostgreSQL – Flexibler Server und andere Ressourcen in Ihrem Azure-Abonnement bereitzustellen. Die Bicep-Skripts befinden sich im `/Allfiles/Labs/Shared`-Ordner des zuvor geklonten Github Repositorys.
 
-### Herunterladen und Installieren von Visual Studio Code und der PostgreSQL-Erweiterung
+### Laden Sie die Visual Studio Code- und die PostgreSQL-Erweiterung herunter, und installieren Sie sie.
 
-Falls Sie Visual Studio Code noch nicht installiert haben:
+Wenn Sie Visual Studio Code nicht installiert haben:
 
-1. Navigieren Sie in einem Browser zum [Herunterladen von Visual Studio Code](https://code.visualstudio.com/download), und wählen Sie die entsprechende Version für Ihr Betriebssystem aus.
+1. Navigieren Sie in einem Browser zu [Herunterladen von Visual Studio Code](https://code.visualstudio.com/download) , und wählen Sie die entsprechende Version für Ihr Betriebssystem aus.
 
-1. Befolgen Sie die Installationsanweisungen für Ihr Betriebssystem.
+1. Folgen Sie den Anweisungen zur Installation für Ihr Betriebssystem.
 
 1. Öffnen Sie Visual Studio Code.
 
 1. Klicken Sie im linken Menü auf **Erweiterungen**, um den Bereich „Erweiterungen“ anzuzeigen.
 
-1. Geben Sie **Subnetze** in die Suchleiste ein. Das Symbol für die PostgreSQL-Erweiterung für Visual Studio Code wird angezeigt. Stellen Sie sicher, dass Sie die von Microsoft ausgewählte Option auswählen.
+1. Geben Sie **Subnetze** in die Suchleiste ein. Das Symbol der PostgreSQL-Erweiterung für Visual Studio Code wird angezeigt. Stellen Sie sicher, dass Sie die Microsoft-Option auswählen.
 
 1. Wählen Sie **Installieren** aus. Die Erweiterung wird installiert.
 
-### Herunterladen und Installieren der Azure CLI und Git
+### Herunterladen und Installieren von Azure CLI und Git
 
-Wenn Sie Azure CLI oder Git noch nicht installiert haben:
+Wenn Sie Azure CLI oder Git nicht installiert haben:
 
-1. Navigieren Sie in einem Browser zu [Installieren der Azure-CLI](https://learn.microsoft.com/cli/azure/install-azure-cli) und befolgen Sie die Anweisungen für Ihr Betriebssystem.
+1. Navigieren Sie in einem Browser zu [Azure CLI installieren](https://learn.microsoft.com/cli/azure/install-azure-cli) und befolgen Sie die Anweisungen für Ihr Betriebssystem.
 
-1. Navigieren Sie in einem Browser zu [Git herunterladen und installieren](https://git-scm.com/downloads) und befolgen Sie die Anweisungen für Ihr Betriebssystem.
+1. Navigieren Sie in einem Browser zu [Git herunterladen und installieren](https://git-scm.com/downloads) und folgen Sie den Anweisungen für Ihr Betriebssystem.
 
 ### Herunterladen der Übungsdateien
 
 Wenn Sie bereits das GitHub-Repository geklont haben, das die Übungsdateien enthält, *überspringen Sie den Download der Übungsdateien*.
 
-Um die Übungsdateien herunterzuladen, klonen Sie das GitHub-Repository mit den Übungsdateien auf Ihrem lokalen Computer. Das Repository enthält alle Skripts und Ressourcen, die Sie zum Abschließen dieser Übung benötigen.
+Um die Übungsdateien herunterzuladen, klonen Sie das Github Repository mit den Übungsdateien auf Ihrem lokalen Computer. Das Repository enthält alle Skripts und Ressourcen, die Sie zum Abschließen dieser Übung benötigen.
 
-1. Öffnen Sie Visual Studio Code, falls es noch nicht geöffnet wurde.
+1. Öffnen Sie Visual Studio Code, wenn es noch nicht geöffnet ist.
 
-1. Wählen Sie **Alle Befehle anzeigen** (Strg + Umschalt + P), um die Befehlspalette zu öffnen.
+1. Wählen Sie **Alle Befehle anzeigen** (STRG+UMSCHALT+P) aus, um die Befehlspalette zu öffnen.
 
-1. Suchen Sie in der Befehlspalette nach **Git: Clone** und wählen Sie ihn aus.
+1. Suchen Sie in der Befehlspalette den Befehl **Git: Klonen**, und wählen Sie ihn aus.
 
-1. Geben Sie in der Befehlspalette Folgendes ein, um das GitHub-Repository mit Übungsressourcen zu klonen, und drücken Sie die **Eingabetaste**:
+1. Geben Sie in der Befehlspalette Folgendes ein, um das Github Repository mit Übungsressourcen zu klonen, und drücken Sie die **EINGABETASTE**:
 
     ```bash
     https://github.com/MicrosoftLearning/mslearn-postgresql.git
     ```
 
-1. Folgen Sie den Aufforderungen, um einen Ordner auszuwählen, in den das Repository geklont werden soll. Das Repository wird in einen Ordner namens `mslearn-postgresql` an dem von Ihnen gewählten Ort geklont.
+1. Folgen Sie den Prompts, um einen Ordner auszuwählen, in den das Repository geklont werden soll. Das Repository wird in einen Ordner namens `mslearn-postgresql` an dem von Ihnen ausgewählten Speicherort geklont.
 
 1. Wenn Sie gefragt werden, ob Sie das geklonte Repository öffnen möchten, wählen Sie **Öffnen** aus. Das Repository wird in Visual Studio Code geöffnet.
 
@@ -73,21 +73,21 @@ Um die Übungsdateien herunterzuladen, klonen Sie das GitHub-Repository mit den 
 
 Wenn Ihre Azure-Ressourcen bereits installiert sind, *überspringen Sie die Bereitstellung von Ressourcen*.
 
-Dieser Schritt führt Sie durch die Verwendung von Azure CLI-Befehlen aus Visual Studio Code, um eine Ressourcengruppe zu erstellen und ein Bicep-Skript auszuführen, um die für die Durchführung dieser Übung erforderlichen Azure-Dienste in Ihrem Azure-Abonnement bereitzustellen.
+Dieser Schritt führt Sie durch die Verwendung von Azure CLI-Befehlen aus Visual Studio Code, um eine Ressourcengruppe zu erstellen und ein Bicep-Skript auszuführen, um die für diese Übung erforderlichen Azure-Services in Ihrem Azure-Abonnement bereitzustellen.
 
-> &#128221; Wenn Sie mehrere Module in diesem Lernpfad absolvieren, können Sie die Azure-Umgebung für alle Module gemeinsam nutzen. In diesem Fall müssen Sie diesen Schritt der Ressourcenzuteilung nur einmal ausführen.
+> &#128221; Wenn Sie mehrere Module in diesem Lernpfad absolvieren, können Sie die Azure-Umgebung für alle gemeinsam nutzen. In diesem Fall müssen Sie diesen Schritt der Ressourcenzuteilung nur einmal ausführen.
 
-1. Öffnen Sie Visual Studio Code, falls es noch nicht geöffnet ist, und öffnen Sie den Ordner, in den Sie das GitHub-Repository geklont haben.
+1. Öffnen Sie Visual Studio Code, falls es noch nicht geöffnet ist, und öffnen Sie den Ordner, in den Sie das Github Repository geklont haben.
 
-1. Erweitern Sie den Ordner **mslearn-postgresql** im Explorer-Fenster.
+1. Erweitern Sie den Ordner **mslearn-postgresql** im Explorer-Bereich.
 
-1. Erweitern Sie den Ordner **Allfiles/Labs/Shared**.
+1. Erweitern Sie den Ordner **Allfiles/Labs/Shared** .
 
-1. Klicken Sie mit der rechten Maustaste auf den Ordner **Allfiles/Labs/Shared** und wählen Sie **Im integrierten Terminal öffnen**. Diese Auswahl öffnet ein Terminalfenster im Visual Studio Code-Fenster.
+1. Klicken Sie mit der rechten Maustaste auf den Ordner **Allfiles/Labs/Shared** und wählen Sie **In integriertem Terminal öffnen** aus. Diese Auswahl öffnet ein Terminalfenster im Visual Studio Code-Fenster.
 
-1. Das Terminal kann standardmäßig ein **PowerShell-Fenster** öffnen. Für diesen Abschnitt der Übung möchten Sie die **Bash-Shell** verwenden. Neben dem Symbol **+** befindet sich ein Dropdown-Pfeil. Wählen Sie diese Option aus und wählen Sie anschließend **Git Bash** oder **Bash** aus der Liste der verfügbaren Profile. Diese Auswahl öffnet ein neues Terminalfenster mit der **Bash-Shell**.
+1. Das Terminal kann standardmäßig ein **PowerShell**-Fenster öffnen. Für diesen Abschnitt des Labs verwenden Sie die **Bash Shell**. Neben dem **+**-Symbol gibt es einen Dropdownpfeil. Wählen Sie ihn aus, und wählen Sie **Git Bash** oder **Bash** aus der Liste der verfügbaren Profile aus. Diese Auswahl öffnet ein neues Terminalfenster mit der **Bash Shell**.
 
-    > &#128221; Sie können das **PowerShell-Terminalfenster** schließen, wenn Sie möchten, aber es ist nicht erforderlich. Sie können mehrere Terminalfenster gleichzeitig geöffnet haben.
+    > &#128221; Sie können das **PowerShell**-Terminalfenster schließen, wenn Sie möchten, aber es ist nicht erforderlich. Sie können mehrere Terminalfenster gleichzeitig geöffnet haben.
 
 1. Führen Sie im Terminalfenster den folgenden Befehl aus, um sich bei Ihrem Azure-Konto anzumelden:
 
@@ -97,7 +97,7 @@ Dieser Schritt führt Sie durch die Verwendung von Azure CLI-Befehlen aus Visual
 
     Dieser Befehl öffnet ein neues Browserfenster, in dem Sie aufgefordert werden, sich bei Ihrem Azure-Konto anzumelden. Kehren Sie nach der Anmeldung zum Terminalfenster zurück.
 
-1. Als Nächstes führen Sie drei Befehle aus, um Variablen zu definieren und so die redundante Eingabe zu reduzieren, wenn Sie Azure-CLI-Befehle zum Erstellen von Azure-Ressourcen verwenden. Die Variablen stehen für den Namen, den Sie Ihrer Ressourcengruppe zuweisen möchten (`RG_NAME`), die Azure-Region (`REGION`), in der die Ressourcen bereitgestellt werden, und ein zufällig generiertes Kennwort für den PostgreSQL-Admin-Login (`ADMIN_PASSWORD`).
+1. Als Nächstes führen Sie drei Befehle aus, um Variablen zu definieren und so die redundante Eingabe zu reduzieren, wenn Sie Azure-CLI-Befehle zum Erstellen von Azure-Ressourcen verwenden. Die Variablen stehen für den Namen, den Sie Ihrer Ressourcengruppe zuweisen (`RG_NAME`), für die Azure-Region (`REGION`), in der die Ressourcen bereitgestellt werden und für ein zufällig generiertes Kennwort für den PostgreSQL-Administrator-Login (`ADMIN_PASSWORD`).
 
     Im ersten Befehl ist die Region, die der entsprechenden Variablen zugewiesen ist, `eastus`, aber Sie können sie auch durch einen Ort Ihrer Wahl ersetzen.
 
@@ -105,7 +105,7 @@ Dieser Schritt führt Sie durch die Verwendung von Azure CLI-Befehlen aus Visual
     REGION=eastus
     ```
 
-    Der folgende Befehl weist den Namen zu, der für die Ressourcengruppe verwendet werden soll, die alle in dieser Übung verwendeten Ressourcen enthält. Der Name der Ressourcengruppe, die der entsprechenden Variablen zugewiesen wird, lautet `rg-learn-work-with-postgresql-$REGION`, wobei `$REGION` der zuvor angegebene Speicherort ist. *Sie können jedoch einen beliebigen anderen Ressourcengruppennamen verwenden, der Ihren Anforderungen entspricht oder den Sie bereits verwenden.*
+    Der folgende Befehl weist den Namen zu, der für die Ressourcengruppe verwendet werden soll, die alle in dieser Übung verwendeten Ressourcen enthält. Der Name der Ressourcengruppe, die der entsprechenden Variablen zugewiesen ist, lautet `rg-learn-work-with-postgresql-$REGION`, wobei `$REGION` der zuvor angegebene Speicherort ist. *Sie können den Namen jedoch auch in einen anderen Namen für die Ressourcengruppe ändern, der Ihren Wünschen entspricht oder den Sie bereits verwenden*.
 
     ```bash
     RG_NAME=rg-learn-work-with-postgresql-$REGION
@@ -133,7 +133,7 @@ Dieser Schritt führt Sie durch die Verwendung von Azure CLI-Befehlen aus Visual
     echo "Please copy it to a safe place, as you will need it later to connect to your PostgreSQL flexible server."
     ```
 
-1. (Überspringen, wenn Sie Ihr Standardabonnement verwenden). Wenn Sie Zugriff auf mehr als ein Azure-Abonnement haben und Ihr Standardabonnement *nicht* das Abonnement ist, in dem Sie die Ressourcengruppe und andere Ressourcen für diese Übung erstellen möchten, führen Sie diesen Befehl aus, um das entsprechende Abonnement festzulegen. Ersetzen Sie dabei das Token `<subscriptionName|subscriptionId>` durch den Namen oder die ID des Abonnements, das Sie verwenden möchten:
+1. Wenn Sie Zugriff auf mehr als ein Azure-Abonnement haben und Ihr Standardabonnement *nicht* das Abonnement ist, in dem Sie die Ressourcengruppe und andere Ressourcen für diese Übung erstellen möchten, führen Sie diesen Befehl aus, um das entsprechende Abonnement festzulegen. Ersetzen Sie dabei das Token `<subscriptionName|subscriptionId>` durch den Namen oder die ID des Abonnements, das Sie verwenden möchten:
 
     ```azurecli
     az account set --subscription 16b3c013-d300-468d-ac64-7eda0820b6d3
@@ -199,11 +199,11 @@ Beim Ausführen des Bicep-Bereitstellungsskripts können einige Fehler auftreten
 
 In diesem Abschnitt stellen Sie eine Verbindung mit dem PostgreSQL-Server mithilfe der PostgreSQL-Erweiterung in Visual Studio Code her. Sie verwenden die PostgreSQL-Erweiterung, um SQL-Skripts auf dem PostgreSQL-Server auszuführen.
 
-1. Öffnen Sie Visual Studio Code, falls es noch nicht geöffnet ist, und öffnen Sie den Ordner, in den Sie das GitHub-Repository geklont haben.
+1. Öffnen Sie Visual Studio Code, falls es noch nicht geöffnet ist, und öffnen Sie den Ordner, in den Sie das Github Repository geklont haben.
 
-1. Wählen Sie im linken Menü das **PostgreSQL-Symbol** aus.
+1. Wählen Sie im linken Menü das **PostgreSQL**-Symbol aus.
 
-    > &#128221; Wenn Sie das PostgreSQL-Symbol nicht sehen, wählen Sie das Symbol **Erweiterungen** und suchen Sie nach **PostgreSQL**. Wählen Sie die Erweiterung **PostgreSQL** von Microsoft aus und klicken Sie auf **Installieren**.
+    > &#128221; Wenn das PostgreSQL-Symbol nicht angezeigt wird, wählen Sie das Symbol **Erweiterungen** aus, und suchen Sie nach **PostgreSQL**. Wählen Sie die Erweiterung **PostgreSQL** von Microsoft und dann **Installieren** aus.
 
 1. Wenn Sie bereits eine Verbindung mit Ihrem PostgreSQL-Server erstellt haben, fahren Sie mit dem nächsten Schritt fort. So erstellen Sie eine neue Verbindung:
 
@@ -211,12 +211,12 @@ In diesem Abschnitt stellen Sie eine Verbindung mit dem PostgreSQL-Server mithil
 
     1. Geben Sie im Dialogfeld **NEUE VERBINDUNG** die folgenden Informationen ein:
 
-        - **Servername**: `<your-server-name>`.postgres.database.azure.com
+        - **Servername**: `<your-server-name>`.postgres.database.azure.com
         - **Authentifizierungstyp**: Kennwort
         - **Benutzername**: pgAdmin
         - **Kennwort**: Das zufällige Kennwort, das Sie zuvor generiert haben.
         - Aktivieren Sie das Kontrollkästchen **Kennwort speichern**.
-        - **Verbindungsname**: `<your-server-name>`
+        - **Verbindungsname: **: `<your-server-name>`
 
     1. Überprüfen Sie die Verbindung, indem Sie **Verbindung testen** auswählen. Wenn die Verbindung erfolgreich hergestellt wurde, wählen Sie **Speichern und verbinden**, um die Verbindung zu speichern. Andernfalls überprüfen Sie die Verbindungsinformationen und versuchen Sie es erneut.
 
@@ -236,7 +236,7 @@ In diesem Abschnitt stellen Sie eine Verbindung mit dem PostgreSQL-Server mithil
 
     1. Wählen Sie die Ellipse in der Menüleiste mit dem Symbol *Ausführen* und wählen Sie **PostgreSQL-Datenbank ändern**. Wählen Sie in der Liste der Datenbanken die Option `zoodb` aus.
 
-        > &#128221; Sie können die Datenbank auch im Abfragebereich ändern. Sie können den Servernamen und den Datenbanknamen unter der Abfrageregisterkarte selbst notieren. Durch Auswahl des Datenbanknamens wird eine Liste der Datenbanken angezeigt. Wählen Sie die Datenbank `zoodb` aus der Liste aus.
+    > &#128221; Sie können die Datenbank auch im Abfragebereich ändern. Sie können den Servernamen und den Datenbanknamen unter der Abfrageregisterkarte selbst notieren. Durch Auswahl des Datenbanknamens wird eine Liste der Datenbanken angezeigt. Wählen Sie die Datenbank `zoodb` aus der Liste aus.
 
     1. Führen Sie die Anweisung **SELECT current_database()** erneut aus, um zu bestätigen, dass die Datenbank nun auf `zoodb` festgelegt ist.
 
@@ -246,7 +246,7 @@ In diesem Abschnitt stellen Sie eine Verbindung mit dem PostgreSQL-Server mithil
 
 ## Erstellen eines neuen Benutzerkontos in Microsoft Entra ID
 
-> &#128221; In den meisten Produktions- oder Entwicklungsumgebungen verfügen Sie möglicherweise nicht über die erforderlichen Abonnementkonten-Berechtigungen, um Konten in Ihrem Microsoft Entra ID-Dienst zu erstellen. In diesem Fall sollten Sie, sofern dies von Ihrer Organisation erlaubt ist, Ihren Microsoft Entra ID-Administrator bitten, ein Testkonto für Sie zu erstellen. *Wenn Sie das Testkonto von Microsoft Entra nicht erhalten können, überspringen Sie diesen Abschnitt und fahren Sie mit dem Abschnitt **Zugriff gewähren auf Azure Database for PostgreSQL** fort*.
+> &#128221; In den meisten Produktions- oder Entwicklungsumgebungen verfügen Sie möglicherweise nicht über die erforderlichen Abonnementkontenberechtigungen, um Konten in Ihrem Microsoft Entra ID-Dienst zu erstellen. In diesem Fall sollten Sie, sofern dies von Ihrer Organisation erlaubt ist, Ihren Microsoft Entra ID-Administrator bitten, ein Testkonto für Sie zu erstellen. *Wenn Sie das Testkonto von Microsoft Entra nicht erhalten können, überspringen Sie diesen Abschnitt und fahren Sie mit dem Abschnitt **Zugriff gewähren auf Azure Database for PostgreSQL** fort*.
 
 1. Melden Sie sich im [Azure-Portal](https://portal.azure.com) mit einem Besitzerkonto an und navigieren Sie zu Microsoft Entra ID.
 
@@ -272,7 +272,7 @@ In diesem Abschnitt stellen Sie eine Verbindung mit dem PostgreSQL-Server mithil
 
 1. Wählen Sie die Rolle **Leser** und dann **Weiter** aus.
 
-1. Klicken Sie auf **+ Mitglieder auswählen**, fügen Sie das neue Konto, das Sie im vorherigen Schritt hinzugefügt haben, zur Mitgliederliste hinzu und klicken Sie dann auf **Weiter**.
+1. Wählen Sie **+ Mitglieder auswählen**, fügen Sie das neue Konto, das Sie im vorherigen Schritt hinzugefügt haben, zur Mitgliederliste hinzu und wählen Sie dann **Weiter**.
 
 1. Wählen Sie **Überprüfen und zuweisen** aus.
 
@@ -328,9 +328,9 @@ In diesem Abschnitt stellen Sie eine Verbindung mit dem PostgreSQL-Server mithil
 
 In diesem Abschnitt erstellen Sie eine neue Rolle in der PostgreSQL-Datenbank und weisen ihr Berechtigungen für den Zugriff auf die Datenbank zu. Außerdem testen Sie die neue Rolle, um sicherzustellen, dass sie über die richtigen Berechtigungen verfügt.
 
-1. Öffnen Sie Visual Studio Code, falls es noch nicht geöffnet wurde.
+1. Öffnen Sie Visual Studio Code, wenn es noch nicht geöffnet ist.
 
-1. Öffnen Sie die Befehlspalette (Strg+Umschalt+P) und wählen Sie **PGSQL: New Query**.
+1. Öffnen Sie die Befehlspalette (Strg + Umschalt + P) und wählen Sie **PGSQL: New Query**.
 
 1. Wählen Sie Ihre PostgreSQL-Serververbindung aus der Liste in der Befehlspalette aus. Wenn Sie nach einem Kennwort gefragt werden, geben Sie das zuvor erstellte Kennwort ein.
 
@@ -383,7 +383,7 @@ Testen wir die neue Rolle, um sicherzustellen, dass sie über die richtigen Bere
 
 1. Überprüfen Sie die Verbindung, indem Sie **Verbindung testen** auswählen. Wenn die Verbindung erfolgreich hergestellt wurde, wählen Sie **Speichern und verbinden**, um die Verbindung zu speichern. Andernfalls überprüfen Sie die Verbindungsinformationen und versuchen Sie es erneut.
 
-1. Öffnen Sie die Befehlspalette (Strg+Umschalt+P) und wählen Sie **PGSQL: New Query**. Wählen Sie die neue Verbindung aus, die Sie in der Liste in der Befehlspalette erstellt haben. Wenn Sie nach einem Kennwort gefragt werden, geben Sie das Kennwort ein, das Sie für die neue Rolle erstellt haben.
+1. Öffnen Sie die Befehlspalette (Strg + Umschalt + P) und wählen Sie **PGSQL: New Query**. Wählen Sie die neue Verbindung aus, die Sie in der Liste in der Befehlspalette erstellt haben. Wenn Sie nach einem Kennwort gefragt werden, geben Sie das Kennwort ein, das Sie für die neue Rolle erstellt haben.
 
 1. Die Verbindung sollte standardmäßig die **zoodb-Datenbank** anzeigen. Falls nicht, können Sie die Datenbank in **zoodb** ändern. Um die Datenbank zu ändern, wählen Sie die Ellipse in der Menüleiste mit dem Symbol *Ausführen* und wählen Sie **PostgreSQL-Datenbank ändern**. Wählen Sie in der Liste der Datenbanken die Option `zoodb` aus. Überprüfen Sie, ob die Datenbank jetzt auf `zoodb` festgelegt ist, indem Sie die Anweisung **SELECT current_database();** ausführen.
 
@@ -418,18 +418,4 @@ Diese Tests zeigen, dass das neue Benutzerkonto DML-Befehle (Data Manipulation L
 
 1. Wenn Sie diesen PostgreSQL-Server nicht mehr für andere Übungen benötigen, um unnötige Azure-Kosten zu vermeiden, löschen Sie die in dieser Übung erstellte Ressourcengruppe.
 
-1. Wenn Sie möchten, dass der PostgreSQL-Server weiterläuft, können Sie ihn einfach laufen lassen. Wenn Sie ihn nicht laufen lassen wollen, können Sie den Server beenden, um unnötige Kosten im Bash-Terminal zu vermeiden. Um den Server zu beenden, führen Sie den folgenden Befehl aus:
-
-    ```azurecli
-    az postgres flexible-server stop --name <your-server-name> --resource-group $RG_NAME
-    ```
-
-    Ersetzen Sie `<your-server-name>` durch den Namen Ihres PostgreSQL-Servers.
-
-    > &#128221; Sie können den Server auch über das Azure-Portal stoppen. Navigieren Sie im Azure-Portal zu **Ressourcengruppen**, und wählen Sie die zuvor erstellte Ressourcengruppe aus. Wählen Sie den PostgreSQL-Server aus und wählen Sie anschließend im Menü die Option **Beenden**.
-
 1. Löschen Sie bei Bedarf das Git Repository, das Sie zuvor geklont haben.
-
-Sie haben diese Übung erfolgreich abgeschlossen. Sie haben gelernt, wie Sie RBAC-Rollen zuweisen, um den Zugriff auf Azure Database for PostgreSQL-Ressourcen zu steuern, und wie Sie PostgreSQL-GRANTS zuweisen, um den Zugriff auf Datenbankvorgänge zu steuern.
-
-Außerdem haben Sie erfahren, wie Sie ein neues Benutzerkonto in der Microsoft Entra ID erstellen und ihm die Rollen „Lesende“ und „Mitwirkender“ zuweisen. Schließlich haben Sie eine neue Rolle in der PostgreSQL-Datenbank erstellt und ihr Berechtigungen für den Zugriff auf die Datenbank zugewiesen.

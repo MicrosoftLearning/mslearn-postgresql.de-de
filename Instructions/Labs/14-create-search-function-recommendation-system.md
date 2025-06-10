@@ -119,7 +119,7 @@ In dieser Aufgabe stellen Sie eine Verbindung zur `rentals`-Datenbank auf Ihrem 
 
 1. Navigieren Sie im [Azure-Portal](https://portal.azure.com/) zu Ihrer neu erstellten Azure-Datenbank für PostgreSQL – Flexibler Server.
 
-2. Wählen Sie im Ressourcenmenü unter **Einstellungen** die Option **Datenbanken** und dann **Verbinden** für die Datenbank `rentals`.
+2. Wählen Sie im Ressourcenmenü unter **Einstellungen** die Option **Datenbanken** und dann **Verbinden** für die Datenbank `rentals`. Bitte beachten Sie, dass Sie durch Auswahl von **Verbinden** keine tatsächliche Verbindung zur Datenbank hergestellt wird. Es werden lediglich Anweisungen zum Herstellen einer Verbindung zur Datenbank mithilfe verschiedener Methoden angezeigt. Lesen Sie die Anweisungen unter **Herstellen einer Verbindung über den Browser oder lokal** und verwenden Sie diese, um eine Verbindung über Azure Cloud Shell herzustellen.
 
     ![Screenshot der Seite Azure-Datenbank für PostgreSQL-Datenbanken. Datenbanken und Verbinden für die Vermietungsdatenbank sind durch rote Boxen hervorgehoben.](media/14-postgresql-rentals-database-connect.png)
 
@@ -143,7 +143,7 @@ Um Vektoren zu speichern und abzufragen und um Einbettungen zu erzeugen, müssen
     CREATE EXTENSION vector;
     ```
 
-3. Um die Erweiterung `azure_ai` zu aktivieren, führen Sie den folgenden SQL-Befehl aus. Sie benötigen den Endpunkt und den API-Schlüssel für die Azure OpenAI-Ressource. Detaillierte Anweisungen finden Sie unter [Aktivieren Sie die `azure_ai`-Erweiterung](https://learn.microsoft.com/en-us/azure/postgresql/flexible-server/generative-ai-azure-overview#enable-the-azure_ai-extension).
+3. Um die Erweiterung `azure_ai` zu aktivieren, führen Sie den folgenden SQL-Befehl aus. Sie benötigen den Endpunkt und den API-Schlüssel für die Azure OpenAI Ressource. Detaillierte Anweisungen finden Sie unter [Aktivieren Sie die `azure_ai`-Erweiterung](https://learn.microsoft.com/en-us/azure/postgresql/flexible-server/generative-ai-azure-overview#enable-the-azure_ai-extension).
 
     ```sql
     CREATE EXTENSION azure_ai;
@@ -334,7 +334,7 @@ In diesem Benchmark haben wir die Einbettung des Mustereintrags erhalten und die
     select out_listingName, out_score from recommend_listing( (SELECT id from listings limit 1), 20); -- search for 20 listing recommendations closest to a listing
     ```
 
-## Bereinigung
+## Bereinigen
 
 Sobald Sie diese Übung abgeschlossen haben, löschen Sie die von Ihnen erstellten Azure-Ressourcen. Sie zahlen für die konfigurierte Kapazität, nicht dafür, wie viel die Datenbank genutzt wird. Folgen Sie diesen Anweisungen, um Ihre Ressourcengruppe und alle Ressourcen, die Sie für dieses Lab erstellt haben, zu löschen.
 

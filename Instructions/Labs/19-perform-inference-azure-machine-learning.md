@@ -54,14 +54,14 @@ Dieser Schritt führt Sie durch die Verwendung von Azure CLI-Befehlen aus der Az
     RG_NAME=rg-learn-postgresql-ai-$REGION
     ```
 
-    Der letzte Befehl generiert nach dem Zufallsprinzip ein Kennwort für das PostgreSQL-Admin-Login. Stellen Sie sicher, dass Sie es an einen sicheren Ort kopieren, um es später für die Verbindung zu Ihrem flexiblen PostgreSQL-Server zu verwenden.
+    Der letzte Befehl generiert nach dem Zufallsprinzip ein Kennwort für das PostgreSQL-Admin-Login. Stellen Sie sicher, dass Sie sie an einen sicheren Ort kopieren, um sie später für die Verbindung mit Ihrem PostgreSQL – Flexibler Server zu verwenden.
 
     ```bash
     a=()
     for i in {a..z} {A..Z} {0..9}; 
-       do
-       a[$RANDOM]=$i
-    done
+        do
+        a[$RANDOM]=$i
+        done
     ADMIN_PASSWORD=$(IFS=; echo "${a[*]::18}")
     echo "Your randomly generated PostgreSQL admin user's password is:"
     echo $ADMIN_PASSWORD
@@ -133,41 +133,37 @@ Der erste Schritt ist die Bereitstellung eines Modells in Azure Machine Learning
 
     ![Screenshot von Azure Machine Learning mit der Schaltfläche Studio starten, die durch eine rote Box hervorgehoben ist.](media/19-aml-launch-studio.png)
 
-4. Wählen Sie die Menüoption **Arbeitsbereiche** und wählen Sie Ihren neu erstellten Azure Machine Learning-Arbeitsbereich.
-
-    ![Screenshot von Azure Machine Learning Studio mit der Menüoption Arbeitsbereiche und dem Azure Machine Learning-Arbeitsbereich, der durch rote Boxen hervorgehoben ist.](media/19-aml-workspace.png)
-
-5. Wählen Sie die Menüoption **Modelle** aus dem Menü **Assets**. Wählen Sie dann die Menüoption **+ Registrieren** und wählen Sie **Aus lokalen Dateien**.
+4. Wählen Sie die Menüoption **Modelle** aus dem Menü **Assets**. Wählen Sie dann die Menüoption **+ Registrieren** und wählen Sie **Aus lokalen Dateien**.
 
     ![Screenshot der Seite „Modellliste“. Eine rote Box umgibt die Menüoption „Modelle“, die Dropdown-Schaltfläche „Registrieren“ und die Option „Aus lokalen Dateien“.](media/19-aml-register-from-local-files.png)
 
-6. Stellen Sie im Menü **Modell hochladen** den Modelltyp auf **MLflow**. Wählen Sie dann **Durchsuchen** und navigieren Sie zu Ihrem Ordner **mlflow-model** und laden Sie die Assets hoch. Wählen Sie danach die Schaltfläche **Weiter**, um fortzufahren.
+5. Stellen Sie im Menü **Modell hochladen** den Modelltyp auf **MLflow**. Wählen Sie dann **Durchsuchen** und navigieren Sie zu Ihrem Ordner **mlflow-model** und laden Sie die Assets hoch. Wählen Sie danach die Schaltfläche **Weiter**, um fortzufahren.
 
     ![Screenshot der Menüseite „Modell hochladen“. Eine rote Box umgibt die Schaltflächen „MLflow-Modelltyp“, „Durchsuchen“ und „Weiter“.](media/19-aml-register-upload-model.png)
 
-7. Nennen Sie das Modell **Mietlisten** und wählen Sie dann die Schaltfläche **Weiter**.
+6. Nennen Sie das Modell **Mietlisten** und wählen Sie dann die Schaltfläche **Weiter**.
 
     ![Screenshot des Bildschirms „Modelleinstellungen“ mit dem Wert von Mietlisten im Feld „Name“. Rot hervorgehobene Felder umgeben das Textfeld „Name“ und die Schaltfläche „Weiter“.](media/19-aml-register-model-settings.png)
 
-8. Wählen Sie die Schaltfläche **Registrieren**, um die Modellregistrierung abzuschließen. Diese Aktion bringt Sie zurück zur Seite **Modelle**. Wählen Sie das neu erstellte Modell aus.
+7. Wählen Sie die Schaltfläche **Registrieren**, um die Modellregistrierung abzuschließen. Diese Aktion bringt Sie zurück zur Seite **Modelle**. Wählen Sie das neu erstellte Modell aus.
 
-    > [!Note]
-    >
-    > Wenn Sie kein Modell sehen, wählen Sie die Menüoption **Neu laden**, um die Seite neu zu laden. Danach sollten Sie das Modell **Mietlisten** sehen.
+> [!Note]
+>
+> Wenn Sie kein Modell sehen, wählen Sie die Menüoption **Neu laden**, um die Seite neu zu laden. Danach sollten Sie das Modell **Mietlisten** sehen.
 
-9. Wählen Sie die Option **Bereitstellen** und erstellen Sie einen neuen **Echtzeitendpunkt**.
+8. Wählen Sie die Option **Bereitstellen** und erstellen Sie einen neuen **Echtzeitendpunkt**.
 
     ![Screenshot der Menüoption Echtzeitendpunkt, hervorgehoben durch eine rote Box.](media/19-aml-automl-deploy-rte.png)
 
-10. Setzen Sie im Flyout-Menü für die Bereitstellung die **Virtuelle Maschine** auf etwas wie **Standard_DS2_v2** und die **Instanzanzahl** auf 1. Wählen Sie die Schaltfläche **Bereitstellen** aus. Das Bereitstellen kann einige Minuten in Anspruch nehmen, da der Bereitstellungsprozess die Bereitstellung einer virtuellen Maschine und die Bereitstellung des Modells als Docker-Container umfasst.
+9. Setzen Sie im Flyout-Menü für die Bereitstellung die **Virtuelle Maschine** auf etwas wie **Standard_DS2_v2** und die **Instanzanzahl** auf 1. Wählen Sie die Schaltfläche **Bereitstellen** aus. Das Bereitstellen kann einige Minuten in Anspruch nehmen, da der Bereitstellungsprozess die Bereitstellung einer virtuellen Maschine und die Bereitstellung des Modells als Docker-Container umfasst.
 
     ![Screenshot des Flyout-Menüs zum Bereitstellen. Die virtuelle Maschine ist Standard_DS2_v2 und die Anzahl der Instanzen ist 1. Rote Boxen markieren das Dropdown-Menü Virtuelle Maschine, das Textfeld Anzahl der Instanzen und die Schaltfläche Bereitstellen.](media/19-aml-automl-deploy-endpoint.png)
 
-11. Nachdem der Endpunkt bereitgestellt wurde, navigieren Sie zur Registerkarte **Verbrauchen** und kopieren den REST-Endpunkt und den Primärschlüssel, damit Sie sie im nächsten Abschnitt verwenden können.
+10. Nachdem der Endpunkt bereitgestellt wurde, navigieren Sie zur Registerkarte **Verbrauchen** und kopieren den REST-Endpunkt und den Primärschlüssel, damit Sie sie im nächsten Abschnitt verwenden können.
 
     ![Screenshot der Registerkarte „Endpunkt verbrauchen“. Rote Boxen markieren die Kopierschaltflächen für den REST-Endpunkt und den primären Authentifizierungsschlüssel.](media/19-aml-automl-endpoint-consume.png)
 
-12. Um zu testen, ob Ihr Endpunkt korrekt läuft, können Sie die Registerkarte **Test** auf Ihrem Endpunkt anwenden. Fügen Sie dann den folgenden Block ein und ersetzen Sie dabei alle bereits vorhandenen Eingaben. Klicken Sie auf die Schaltfläche **Test**, und Sie sollten eine JSON-Ausgabe sehen, die ein Array mit einem einzigen Dezimalwert enthält, der die den US-Dollar-Betrag angibt, den Sie für eine einzelne Mietnacht für dieses bestimmte Objekt erwarten können.
+11. Um zu testen, ob Ihr Endpunkt korrekt läuft, können Sie die Registerkarte **Test** auf Ihrem Endpunkt anwenden. Fügen Sie dann den folgenden Block ein und ersetzen Sie dabei alle bereits vorhandenen Eingaben. Klicken Sie auf die Schaltfläche **Test**, und Sie sollten eine JSON-Ausgabe sehen, die ein Array mit einem einzigen Dezimalwert enthält, der die den US-Dollar-Betrag angibt, den Sie für eine einzelne Mietnacht für dieses bestimmte Objekt erwarten können.
 
     ```json
     {
@@ -199,7 +195,7 @@ In dieser Aufgabe verbinden Sie sich mit der `rentals`-Datenbank auf Ihrem Azure
 
 1. Navigieren Sie im [Azure-Portal](https://portal.azure.com/) zu Ihrem neu erstellten Azure Database for PostgreSQL – Flexibler Server.
 
-2. Wählen Sie im Ressourcenmenü unter **Einstellungen** die Option **Datenbanken** und dann **Verbinden** für die Datenbank `rentals`.
+2. Wählen Sie im Ressourcenmenü unter **Einstellungen** die Option **Datenbanken** und dann **Verbinden** für die Datenbank `rentals`. Bitte beachten Sie, dass Sie durch Auswahl von **Verbinden** keine tatsächliche Verbindung zur Datenbank hergestellt wird. Es werden lediglich Anweisungen zum Herstellen einer Verbindung zur Datenbank mithilfe verschiedener Methoden angezeigt. Lesen Sie die Anweisungen unter **Herstellen einer Verbindung über den Browser oder lokal** und verwenden Sie diese, um eine Verbindung über Azure Cloud Shell herzustellen.
 
     ![Screenshot der Seite Azure-Datenbank für PostgreSQL-Datenbanken. Datenbanken und Verbinden für die Vermietungsdatenbank sind durch rote Boxen hervorgehoben.](media/17-postgresql-rentals-database-connect.png)
 
@@ -327,9 +323,9 @@ Um die Tabelle mit den Sprachübersetzungen aufzufüllen, erstellen Sie eine ges
     $$ LANGUAGE sql;
     ```
 
-    > [!Note]
-    >
-    > Standardmäßig ist der Bereitstellungsname eine Kombination aus dem Modellnamen (**Mietlisten**) und der Versionsnummer (**1**). Wenn Sie eine neue Version des Modells bereitstellen und den Standard-Bereitstellungsnamen verwenden, würde der neue Bereitstellungsname **mietlisten-2** lauten.
+> [!Note]
+>
+> Standardmäßig ist der Bereitstellungsname eine Kombination aus dem Modellnamen (**Mietlisten**) und der Versionsnummer (**1**). Wenn Sie eine neue Version des Modells bereitstellen und den Standard-Bereitstellungsnamen verwenden, würde der neue Bereitstellungsname **mietlisten-2** lauten.
 
 2. Führen Sie die Funktion mit dem folgenden SQL-Befehl aus:
 
@@ -351,7 +347,7 @@ Um die Tabelle mit den Sprachübersetzungen aufzufüllen, erstellen Sie eine ges
 
     Diese Abfrage gibt fünf Zeilen zurück, eine für jede Zeile in `listings_to_price`. Sie wird alle Spalten der Tabelle `listings_to_price` und das Ergebnis der Funktion `price_listing()` als `expected_price` enthalten.
 
-## Bereinigung
+## Bereinigen
 
 Sobald Sie diese Übung abgeschlossen haben, löschen Sie die von Ihnen erstellten Azure-Ressourcen. Sie zahlen für die konfigurierte Kapazität, nicht dafür, wie viel die Datenbank genutzt wird. Folgen Sie diesen Anweisungen, um Ihre Ressourcengruppe und alle Ressourcen, die Sie für dieses Lab erstellt haben, zu löschen.
 

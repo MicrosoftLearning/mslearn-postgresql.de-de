@@ -10,7 +10,7 @@ Als Teil der KI-gesteuerten App, die Sie für Margie's Travel entwickeln, möcht
 
 ## Vor der Installation
 
-Sie benötigen ein [Azure-Abonnement](https://azure.microsoft.com/free) mit administrativen Rechten und müssen für den Azure OpenAI-Zugang in diesem Abonnement zugelassen sein. Wenn Sie Zugriff auf Azure OpenAI benötigen, bewerben Sie sich auf der Seite [Eingeschränkter Zugriff auf Azure OpenAI](https://learn.microsoft.com/legal/cognitive-services/openai/limited-access).
+Sie benötigen ein [Azure-Abonnement](https://azure.microsoft.com/free) mit Administratorrechten.
 
 ### Bereitstellen von Ressourcen in Ihrem Azure-Abonnement
 
@@ -49,9 +49,9 @@ Dieser Schritt führt Sie durch die Verwendung von Azure CLI-Befehlen aus der Az
     ```bash
     a=()
     for i in {a..z} {A..Z} {0..9}; 
-       do
-       a[$RANDOM]=$i
-    done
+        do
+        a[$RANDOM]=$i
+        done
     ADMIN_PASSWORD=$(IFS=; echo "${a[*]::18}")
     echo "Your randomly generated PostgreSQL admin user's password is:"
     echo $ADMIN_PASSWORD
@@ -117,7 +117,7 @@ In dieser Aufgabe stellen Sie eine Verbindung zur `rentals`-Datenbank auf Ihrem 
 
 1. Navigieren Sie im [Azure-Portal](https://portal.azure.com/) zu Ihrer neu erstellten Azure Database for PostgreSQL – Flexibler Serverinstanz.
 
-2. Wählen Sie im Ressourcenmenü unter **Einstellungen** die Option **Datenbanken** und dann **Verbinden** für die Datenbank `rentals`.
+2. Wählen Sie im Ressourcenmenü unter **Einstellungen** die Option **Datenbanken** und dann **Verbinden** für die Datenbank `rentals`. Bitte beachten Sie, dass Sie durch Auswahl von **Verbinden** keine tatsächliche Verbindung zur Datenbank hergestellt wird. Es werden lediglich Anweisungen zum Herstellen einer Verbindung zur Datenbank mithilfe verschiedener Methoden angezeigt. Lesen Sie die Anweisungen unter **Herstellen einer Verbindung über den Browser oder lokal** und verwenden Sie diese, um eine Verbindung über Azure Cloud Shell herzustellen.
 
     ![Screenshot der Seite Azure-Datenbank für PostgreSQL-Datenbanken. Datenbanken und Verbinden für die Vermietungsdatenbank sind durch rote Boxen hervorgehoben.](media/17-postgresql-rentals-database-connect.png)
 
@@ -186,9 +186,9 @@ Die im `azure_cognitive` Schema der `azure_ai` Erweiterung enthaltenen Azure KI 
 
     ![Es wird ein Screenshot der Seite Schlüssel und Endpunkte des Azure-Sprachdienstes angezeigt. Die Schaltflächen KEY 1 und Endpunkt kopieren sind durch rote Felder hervorgehoben.](media/16-azure-language-service-keys-endpoints.png)
 
-    > [!Note]
-    >
-    > Wenn Sie bei der Installation der Erweiterung `azure_ai` die `NOTICE: extension "azure_ai" already exists, skipping CREATE EXTENSION` -Meldung erhalten haben und die Erweiterung bereits mit Ihrem Sprachdienst-Endpunkt und -Schlüssel konfiguriert ist, können Sie die `azure_ai.get_setting()`-Funktion verwenden, um zu überprüfen, ob diese Einstellungen korrekt sind und dann Schritt 2 überspringen, wenn sie korrekt sind.
+> [!Note]
+>
+> Wenn Sie bei der Installation der Erweiterung `azure_ai` die `NOTICE: extension "azure_ai" already exists, skipping CREATE EXTENSION` -Meldung erhalten haben und die Erweiterung bereits mit Ihrem Sprachdienst-Endpunkt und -Schlüssel konfiguriert ist, können Sie die `azure_ai.get_setting()`-Funktion verwenden, um zu überprüfen, ob diese Einstellungen korrekt sind und dann Schritt 2 überspringen, wenn sie korrekt sind.
 
 2. Kopieren Sie die Werte für den Endpunkt und den Zugriffsschlüssel. Ersetzen Sie dann in den folgenden Befehlen die `{endpoint}` und `{api-key}` Token durch die Werte, die Sie aus dem Azure-Portal kopiert haben. Führen Sie die Befehle von der Eingabeaufforderung `psql` in der Cloud Shell aus, um Ihre Werte der `azure_ai.settings`-Tabelle hinzuzufügen.
 
@@ -381,7 +381,7 @@ Für das Empfehlungssystem für Mietobjekte, das Sie für Margie's Travel entwic
     ORDER BY negative_score DESC;
     ```
 
-## Bereinigung
+## Bereinigen
 
 Sobald Sie diese Übung abgeschlossen haben, löschen Sie die von Ihnen erstellten Azure-Ressourcen. Sie zahlen für die konfigurierte Kapazität, nicht dafür, wie viel die Datenbank genutzt wird. Folgen Sie diesen Anweisungen, um Ihre Ressourcengruppe und alle Ressourcen, die Sie für dieses Lab erstellt haben, zu löschen.
 

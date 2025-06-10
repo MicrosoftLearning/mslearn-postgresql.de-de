@@ -54,14 +54,14 @@ Dieser Schritt führt Sie durch die Verwendung von Azure CLI-Befehlen aus der Az
     RG_NAME=rg-learn-postgresql-ai-$REGION
     ```
 
-    Der letzte Befehl generiert nach dem Zufallsprinzip ein Kennwort für das PostgreSQL-Admin-Login. Stellen Sie sicher, dass Sie es an einen sicheren Ort kopieren, um es später für die Verbindung zu Ihrem flexiblen PostgreSQL-Server zu verwenden.
+    Der letzte Befehl generiert nach dem Zufallsprinzip ein Kennwort für das PostgreSQL-Admin-Login. Stellen Sie sicher, dass Sie sie an einen sicheren Ort kopieren, um sie später für die Verbindung mit Ihrem PostgreSQL – Flexibler Server zu verwenden.
 
     ```bash
     a=()
     for i in {a..z} {A..Z} {0..9}; 
-       do
-       a[$RANDOM]=$i
-    done
+        do
+        a[$RANDOM]=$i
+        done
     ADMIN_PASSWORD=$(IFS=; echo "${a[*]::18}")
     echo "Your randomly generated PostgreSQL admin user's password is:"
     echo $ADMIN_PASSWORD
@@ -127,7 +127,7 @@ In dieser Aufgabe stellen Sie eine Verbindung zur `rentals`-Datenbank auf Ihrem 
 
 1. Navigieren Sie im [Azure-Portal](https://portal.azure.com/) zu Ihrem neu erstellten Azure Database for PostgreSQL – Flexibler Server.
 
-2. Wählen Sie im Ressourcenmenü unter **Einstellungen** die Option **Datenbanken** und dann **Verbinden** für die Datenbank `rentals`.
+2. Wählen Sie im Ressourcenmenü unter **Einstellungen** die Option **Datenbanken** und dann **Verbinden** für die Datenbank `rentals`. Bitte beachten Sie, dass Sie durch Auswahl von **Verbinden** keine tatsächliche Verbindung zur Datenbank hergestellt wird. Es werden lediglich Anweisungen zum Herstellen einer Verbindung zur Datenbank mithilfe verschiedener Methoden angezeigt. Lesen Sie die Anweisungen unter **Herstellen einer Verbindung über den Browser oder lokal** und verwenden Sie diese, um eine Verbindung über Azure Cloud Shell herzustellen.
 
     ![Screenshot der Seite Azure-Datenbank für PostgreSQL-Datenbanken. Datenbanken und Verbinden für die Vermietungsdatenbank sind durch rote Boxen hervorgehoben.](media/17-postgresql-rentals-database-connect.png)
 
@@ -344,7 +344,7 @@ Sie haben eine gespeicherte Prozedur, um bestehende Angebote zu übersetzen, abe
      130 |          2 | sw            | Hii ni nyumba nzuri katika eneo kubwa.
     ```
 
-## Bereinigung
+## Bereinigen
 
 Sobald Sie diese Übung abgeschlossen haben, löschen Sie die von Ihnen erstellten Azure-Ressourcen. Sie zahlen für die konfigurierte Kapazität, nicht dafür, wie viel die Datenbank genutzt wird. Folgen Sie diesen Anweisungen, um Ihre Ressourcengruppe und alle Ressourcen, die Sie für dieses Lab erstellt haben, zu löschen.
 

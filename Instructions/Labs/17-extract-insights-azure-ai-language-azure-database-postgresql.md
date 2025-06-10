@@ -25,7 +25,7 @@ Am Ende haben Sie vier neue Spalten in der `listings`-Tabelle mit extrahierten E
 
 ## Vor der Installation
 
-Sie benötigen ein [Azure-Abonnement](https://azure.microsoft.com/free) mit administrativen Rechten und müssen für den Azure OpenAI-Zugang in diesem Abonnement zugelassen sein. Wenn Sie Zugriff auf Azure OpenAI benötigen, bewerben Sie sich auf der Seite [Eingeschränkter Zugriff auf Azure OpenAI](https://learn.microsoft.com/legal/cognitive-services/openai/limited-access).
+Sie benötigen ein [Azure-Abonnement](https://azure.microsoft.com/free) mit Administratorrechten.
 
 ### Bereitstellen von Ressourcen in Ihrem Azure-Abonnement
 
@@ -66,7 +66,7 @@ Dieser Schritt führt Sie durch die Verwendung von Azure CLI-Befehlen aus der Az
     for i in {a..z} {A..Z} {0..9}; 
         do
         a[$RANDOM]=$i
-    done
+        done
     ADMIN_PASSWORD=$(IFS=; echo "${a[*]::18}")
     echo "Your randomly generated PostgreSQL admin user's password is:"
     echo $ADMIN_PASSWORD
@@ -132,7 +132,7 @@ In dieser Aufgabe stellen Sie eine Verbindung zur `rentals`-Datenbank auf Ihrem 
 
 1. Navigieren Sie im [Azure-Portal](https://portal.azure.com/) zu Ihrer neu erstellten Azure-Datenbank für PostgreSQL – Flexibler Server.
 
-2. Wählen Sie im Ressourcenmenü unter **Einstellungen** die Option **Datenbanken** und dann **Verbinden** für die Datenbank `rentals`.
+2. Wählen Sie im Ressourcenmenü unter **Einstellungen** die Option **Datenbanken** und dann **Verbinden** für die Datenbank `rentals`. Bitte beachten Sie, dass Sie durch Auswahl von **Verbinden** keine tatsächliche Verbindung zur Datenbank hergestellt wird. Es werden lediglich Anweisungen zum Herstellen einer Verbindung zur Datenbank mithilfe verschiedener Methoden angezeigt. Lesen Sie die Anweisungen unter **Herstellen einer Verbindung über den Browser oder lokal** und verwenden Sie diese, um eine Verbindung über Azure Cloud Shell herzustellen.
 
     ![Screenshot der Seite Azure-Datenbank für PostgreSQL-Datenbanken. Datenbanken und Verbinden für die Vermietungsdatenbank sind durch rote Boxen hervorgehoben.](media/17-postgresql-rentals-database-connect.png)
 
@@ -298,8 +298,8 @@ Um Ihre Probendaten zurückzusetzen, können Sie `DROP TABLE listings` ausführe
 
     ```sql
     SELECT id, name
-    FROM listings, unnest(entities) e
-    WHERE e.text LIKE '%basement%'
+    FROM listings, unnest(listings.entities) AS e
+    WHERE e.text LIKE '%basements%'
     LIMIT 10;
     ```
 
@@ -356,8 +356,8 @@ Um Ihre Probendaten zurückzusetzen, können Sie `DROP TABLE listings` ausführe
     ```sql
     UPDATE listings
     SET
-     description_pii_safe = pii.redacted_text,
-     pii_entities = pii.entities
+        description_pii_safe = pii.redacted_text,
+        pii_entities = pii.entities
     FROM (SELECT id, description FROM listings WHERE description_pii_safe IS NULL OR pii_entities IS NULL ORDER BY id LIMIT 100) subset,
     LATERAL azure_cognitive.recognize_pii_entities(subset.description, 'en-us') as pii
     WHERE listings.id = subset.id;
@@ -381,7 +381,7 @@ Um Ihre Probendaten zurückzusetzen, können Sie `DROP TABLE listings` ausführe
 4. Sie können auch die in der PII erkannten Entitäten identifizieren, indem Sie zum Beispiel die gleiche Liste wie oben verwenden:
 
     ```sql
-    SELECT entities
+    SELECT pii_entities
     FROM listings
     WHERE entities IS NOT NULL
     LIMIT 1;
@@ -419,7 +419,7 @@ Stellen Sie sicher, dass die extrahierten Schlüsselbegriffe, erkannten Entität
     SELECT COUNT(*) FROM listings WHERE entities IS NOT NULL;
     ```
 
-    Die Ausgabe sollte in etwa wie folgt aussehen:
+    Es sollte etwa Folgendes angezeigt werden:
 
     ```sql
     count 
@@ -447,7 +447,7 @@ Stellen Sie sicher, dass die extrahierten Schlüsselbegriffe, erkannten Entität
     SELECT COUNT(*) FROM listings WHERE description != description_pii_safe;
     ```
 
-    Die Ausgabe sollte in etwa wie folgt aussehen:
+    Es sollte etwa Folgendes angezeigt werden:
 
     ```sql
     count 
@@ -469,7 +469,7 @@ Stellen Sie sicher, dass die extrahierten Schlüsselbegriffe, erkannten Entität
         13
     ```
 
-## Bereinigung
+## Bereinigen
 
 Sobald Sie diese Übung abgeschlossen haben, löschen Sie die von Ihnen erstellten Azure-Ressourcen. Sie zahlen für die konfigurierte Kapazität, nicht dafür, wie viel die Datenbank genutzt wird. Folgen Sie diesen Anweisungen, um Ihre Ressourcengruppe und alle Ressourcen, die Sie für dieses Lab erstellt haben, zu löschen.
 

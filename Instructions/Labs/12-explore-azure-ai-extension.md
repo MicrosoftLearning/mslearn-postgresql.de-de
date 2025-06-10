@@ -10,7 +10,7 @@ Als leitende Entwicklerin bzw. leitender Entwickler bei Margie's Travel haben Si
 
 ## Vor der Installation
 
-Sie benötigen ein [Azure-Abonnement](https://azure.microsoft.com/free) mit administrativen Rechten und müssen für den Azure OpenAI-Zugang in diesem Abonnement zugelassen sein. Wenn Sie Zugriff auf Azure OpenAI benötigen, bewerben Sie sich auf der Seite [Eingeschränkter Zugriff auf Azure OpenAI](https://learn.microsoft.com/legal/cognitive-services/openai/limited-access).
+Sie benötigen ein [Azure-Abonnement](https://azure.microsoft.com/free) mit Administratorrechten.
 
 ### Bereitstellen von Ressourcen in Ihrem Azure-Abonnement
 
@@ -48,10 +48,10 @@ Dieser Schritt führt Sie durch die Verwendung von Azure CLI-Befehlen aus der Az
 
     ```bash
     a=()
-    for i in {a..z} {A..Z} {0..9}; 
+    for i in {a..z} {A..Z} {0..9};
         do
-        a[$RANDOM]=$i
-    done
+        a[$RANDOM]=$i
+        done
     ADMIN_PASSWORD=$(IFS=; echo "${a[*]::18}")
     echo "Your randomly generated PostgreSQL admin user's password is:"
     echo $ADMIN_PASSWORD
@@ -117,15 +117,15 @@ In dieser Aufgabe verbinden Sie sich mit der `rentals`-Datenbank auf Ihrem Azure
 
 1. Navigieren Sie im [Azure-Portal](https://portal.azure.com/) zu Ihrem neu erstellten Azure Database for PostgreSQL – Flexibler Server.
 
-2. Wählen Sie im Ressourcenmenü unter **Einstellungen** die Option **Datenbanken** und dann **Verbinden** für die Datenbank `rentals`.
+1. Wählen Sie im Ressourcenmenü unter **Einstellungen** die Option **Datenbanken** und dann **Verbinden** für die Datenbank `rentals`. Bitte beachten Sie, dass Sie durch Auswahl von **Verbinden** keine tatsächliche Verbindung zur Datenbank hergestellt wird. Es werden lediglich Anweisungen zum Herstellen einer Verbindung zur Datenbank mithilfe verschiedener Methoden angezeigt. Lesen Sie die Anweisungen unter **Herstellen einer Verbindung über den Browser oder lokal** und verwenden Sie diese, um eine Verbindung über Azure Cloud Shell herzustellen.
 
     ![Screenshot der Seite Azure-Datenbank für PostgreSQL-Datenbanken. Datenbanken und Verbinden für die Vermietungsdatenbank sind durch rote Boxen hervorgehoben.](media/12-postgresql-rentals-database-connect.png)
 
-3. Geben Sie bei der Eingabeaufforderung „Kennwort für den Benutzer pgAdmin“ in der Cloud Shell das zufällig generierte Kennwort für die Anmeldung **pgAdmin** ein.
+1. Geben Sie bei der Eingabeaufforderung „Kennwort für den Benutzer pgAdmin“ in der Cloud Shell das zufällig generierte Kennwort für die Anmeldung **pgAdmin** ein.
 
     Sobald Sie angemeldet sind, wird die Eingabeaufforderung `psql` für die Datenbank `rentals` angezeigt.
 
-4. Im weiteren Verlauf dieser Übung arbeiten Sie weiterhin in der Cloud Shell. Daher kann es hilfreich sein, den Bereich in Ihrem Browserfenster zu erweitern, indem Sie die Schaltfläche **Maximieren** oben rechts im Bereich wählen.
+1. Im weiteren Verlauf dieser Übung arbeiten Sie weiterhin in der Cloud Shell. Daher kann es hilfreich sein, den Bereich in Ihrem Browserfenster zu erweitern, indem Sie die Schaltfläche **Maximieren** oben rechts im Bereich wählen.
 
     ![Screenshot des Azure Cloud Shell-Fensters mit der Schaltfläche „Maximieren“, die durch eine rote Box hervorgehoben ist.](media/12-azure-cloud-shell-pane-maximize.png)
 
@@ -316,9 +316,9 @@ Das Schema `azure_openai` bietet die Möglichkeit, die Erstellung von Vektoreinb
 
     ```sql
     SELECT
-      id,
-      name,
-      azure_openai.create_embeddings('embedding', description) AS vector
+        id,
+        name,
+        azure_openai.create_embeddings('embedding', description) AS vector
     FROM listings
     LIMIT 1;
     ```
@@ -412,9 +412,9 @@ Das `azure_cognitive`-Schema bietet den Rahmen für die direkte Interaktion mit 
 
     ```sql
     SELECT
-      id,
-      comments,
-      azure_cognitive.analyze_sentiment(comments, 'en') AS sentiment
+        id,
+        comments,
+        azure_cognitive.analyze_sentiment(comments, 'en') AS sentiment
     FROM reviews
     WHERE id IN (1, 3);
     ```
@@ -447,7 +447,7 @@ Mit dem `azure_ml`-Schema können sich Funktionen direkt von Ihrer Datenbank aus
 
     Durch die Angabe eines Endpunkts und Schlüssels können Sie sich mit einem bereitgestellten Azure ML-Endpunkt verbinden, so wie Sie sich mit Ihren Azure OpenAI- und Azure KI Services-Endpunkten verbunden haben. Für die Interaktion mit Azure ML ist ein trainiertes und bereitgestelltes Modell erforderlich. Daher fällt diese Übung aus dem Rahmen und Sie werden diese Verbindung nicht herstellen, um sie hier auszuprobieren.
 
-## Bereinigung
+## Bereinigen
 
 Sobald Sie diese Übung abgeschlossen haben, löschen Sie die von Ihnen erstellten Azure-Ressourcen. Sie zahlen für die konfigurierte Kapazität, nicht dafür, wie viel die Datenbank genutzt wird. Folgen Sie diesen Anweisungen, um Ihre Ressourcengruppe und alle Ressourcen, die Sie für dieses Lab erstellt haben, zu löschen.
 

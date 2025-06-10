@@ -12,60 +12,60 @@ In dieser Übung konfigurieren Sie die logische Replikation, die nativ in Postgr
 
 Für diese Übung benötigen Sie ein eigenes Azure-Abonnement. Wenn Sie nicht über ein Azure-Abonnement verfügen, können Sie ein [kostenloses Azure-Testkonto](https://azure.microsoft.com/free) erstellen.
 
-Darüber hinaus müssen Sie Folgendes auf Ihrem Computer installiert haben:
+Zusätzlich muss Folgendes auf Ihrem Computer installiert sein:
 
 - Visual Studio Code.
-- Postgres Visual Studio Code-Erweiterung von Microsoft.
+- Postgres Visual Studio Code-Erweiterung von Microsoft
 - Azure-Befehlszeilenschnittstelle.
 - Git.
 
 ## Erstellen der Übungsumgebung
 
-In diesen und späteren Übungen verwenden Sie ein Bicep-Skript, um die Azure-Datenbank for PostgreSQL – Flexibler Server und andere Ressourcen in Ihrem Azure-Abonnement bereitzustellen. Die Bicep-Skripts befinden sich im `/Allfiles/Labs/Shared`-Ordner des zuvor geklonten GitHub-Repositorys.
+In diesen und späteren Übungen verwenden Sie ein Bicep-Skript, um die Azure Database for PostgreSQL – Flexibler Server und andere Ressourcen in Ihrem Azure-Abonnement bereitzustellen. Die Bicep-Skripts befinden sich im `/Allfiles/Labs/Shared`-Ordner des zuvor geklonten Github Repositorys.
 
-### Herunterladen und Installieren von Visual Studio Code und der PostgreSQL-Erweiterung
+### Laden Sie die Visual Studio Code- und die PostgreSQL-Erweiterung herunter, und installieren Sie sie.
 
-Falls Sie Visual Studio Code noch nicht installiert haben:
+Wenn Sie Visual Studio Code nicht installiert haben:
 
-1. Navigieren Sie in einem Browser zum [Herunterladen von Visual Studio Code](https://code.visualstudio.com/download), und wählen Sie die entsprechende Version für Ihr Betriebssystem aus.
+1. Navigieren Sie in einem Browser zu [Herunterladen von Visual Studio Code](https://code.visualstudio.com/download) , und wählen Sie die entsprechende Version für Ihr Betriebssystem aus.
 
-1. Befolgen Sie die Installationsanweisungen für Ihr Betriebssystem.
+1. Folgen Sie den Anweisungen zur Installation für Ihr Betriebssystem.
 
 1. Öffnen Sie Visual Studio Code.
 
 1. Klicken Sie im linken Menü auf **Erweiterungen**, um den Bereich „Erweiterungen“ anzuzeigen.
 
-1. Geben Sie **Subnetze** in die Suchleiste ein. Das Symbol für die PostgreSQL-Erweiterung für Visual Studio Code wird angezeigt. Stellen Sie sicher, dass Sie die von Microsoft ausgewählte Option auswählen.
+1. Geben Sie **Subnetze** in die Suchleiste ein. Das Symbol der PostgreSQL-Erweiterung für Visual Studio Code wird angezeigt. Stellen Sie sicher, dass Sie die Microsoft-Option auswählen.
 
 1. Wählen Sie **Installieren** aus. Die Erweiterung wird installiert.
 
-### Herunterladen und Installieren der Azure CLI und Git
+### Herunterladen und Installieren von Azure CLI und Git
 
-Wenn Sie Azure CLI oder Git noch nicht installiert haben:
+Wenn Sie Azure CLI oder Git nicht installiert haben:
 
-1. Navigieren Sie in einem Browser zu [Installieren der Azure-CLI](https://learn.microsoft.com/cli/azure/install-azure-cli) und befolgen Sie die Anweisungen für Ihr Betriebssystem.
+1. Navigieren Sie in einem Browser zu [Azure CLI installieren](https://learn.microsoft.com/cli/azure/install-azure-cli) und befolgen Sie die Anweisungen für Ihr Betriebssystem.
 
-1. Navigieren Sie in einem Browser zu [Git herunterladen und installieren](https://git-scm.com/downloads) und befolgen Sie die Anweisungen für Ihr Betriebssystem.
+1. Navigieren Sie in einem Browser zu [Git herunterladen und installieren](https://git-scm.com/downloads) und folgen Sie den Anweisungen für Ihr Betriebssystem.
 
 ### Herunterladen der Übungsdateien
 
 Wenn Sie bereits das GitHub-Repository geklont haben, das die Übungsdateien enthält, *überspringen Sie den Download der Übungsdateien*.
 
-Um die Übungsdateien herunterzuladen, klonen Sie das GitHub-Repository mit den Übungsdateien auf Ihrem lokalen Computer. Das Repository enthält alle Skripts und Ressourcen, die Sie zum Abschließen dieser Übung benötigen.
+Um die Übungsdateien herunterzuladen, klonen Sie das Github Repository mit den Übungsdateien auf Ihrem lokalen Computer. Das Repository enthält alle Skripts und Ressourcen, die Sie zum Abschließen dieser Übung benötigen.
 
-1. Öffnen Sie Visual Studio Code, falls es noch nicht geöffnet wurde.
+1. Öffnen Sie Visual Studio Code, wenn es noch nicht geöffnet ist.
 
-1. Wählen Sie **Alle Befehle anzeigen** (Strg + Umschalt + P), um die Befehlspalette zu öffnen.
+1. Wählen Sie **Alle Befehle anzeigen** (STRG+UMSCHALT+P) aus, um die Befehlspalette zu öffnen.
 
-1. Suchen Sie in der Befehlspalette nach **Git: Clone** und wählen Sie ihn aus.
+1. Suchen Sie in der Befehlspalette den Befehl **Git: Klonen**, und wählen Sie ihn aus.
 
-1. Geben Sie in der Befehlspalette Folgendes ein, um das GitHub-Repository mit Übungsressourcen zu klonen, und drücken Sie die **Eingabetaste**:
+1. Geben Sie in der Befehlspalette Folgendes ein, um das Github Repository mit Übungsressourcen zu klonen, und drücken Sie die **EINGABETASTE**:
 
     ```bash
     https://github.com/MicrosoftLearning/mslearn-postgresql.git
     ```
 
-1. Folgen Sie den Aufforderungen, um einen Ordner auszuwählen, in den das Repository geklont werden soll. Das Repository wird in einen Ordner namens `mslearn-postgresql` an dem von Ihnen gewählten Ort geklont.
+1. Folgen Sie den Prompts, um einen Ordner auszuwählen, in den das Repository geklont werden soll. Das Repository wird in einen Ordner namens `mslearn-postgresql` an dem von Ihnen ausgewählten Speicherort geklont.
 
 1. Wenn Sie gefragt werden, ob Sie das geklonte Repository öffnen möchten, wählen Sie **Öffnen** aus. Das Repository wird in Visual Studio Code geöffnet.
 
@@ -125,7 +125,7 @@ In diesem Abschnitt erstellen Sie den Verlegerserver. Der Verlegerserver ist die
 1. Füllen Sie auf der Registerkarte **Allgemeine Informationen** für „Flexibler Server“ die Felder wie folgt aus:
     - **Abonnement**: Ihr Abonnement
     - **Ressourcengruppe**: Wählen Sie **rg-PostgreSQL_Replikation** aus.
-    - **Servername:** - *psql-postgresql-pub9999* (Der Name muss global eindeutig sein, ersetzen Sie also 9999 durch vier zufällige Zahlen).
+    - **Servername:** - *psql-postgresql-sub9999* (Der Name muss global eindeutig sein, ersetzen Sie also 9999 durch vier zufällige Zahlen).
     - **Region**: Wählen Sie dieselbe Region wie die Ressourcengruppe aus.
     - **PostgreSQL-Version**: Wählen Sie 16.
     - **Workloadtyp** - *Entwicklung*.
@@ -171,9 +171,9 @@ In diesem Abschnitt richten Sie den Verlegerserver ein. Der Verlegerserver ist d
 
 1. Öffnen Sie den Ordner, in den Sie das Github Repository geklont haben.
 
-1. Wählen Sie im linken Menü das **PostgreSQL-Symbol** aus.
+1. Wählen Sie im linken Menü das **PostgreSQL**-Symbol aus.
 
-    > &#128221; Wenn Sie das PostgreSQL-Symbol nicht sehen, wählen Sie das Symbol **Erweiterungen** und suchen Sie nach **PostgreSQL**. Wählen Sie die Erweiterung **PostgreSQL** von Microsoft aus und klicken Sie auf **Installieren**.
+    > &#128221; Wenn das PostgreSQL-Symbol nicht angezeigt wird, wählen Sie das Symbol **Erweiterungen** aus, und suchen Sie nach **PostgreSQL**. Wählen Sie die Erweiterung **PostgreSQL** von Microsoft und dann **Installieren** aus.
 
 1. Wenn Sie bereits eine Verbindung mit Ihrem PostgreSQL-*Verlegerserver* erstellt haben, fahren Sie mit dem nächsten Schritt fort. So erstellen Sie eine neue Verbindung:
 
@@ -230,9 +230,9 @@ In diesem Abschnitt richten Sie den Abonnentenserver ein. Der Abonnentenserver i
 
 1. Öffnen Sie den Ordner, in den Sie das Github Repository geklont haben.
 
-1. Wählen Sie im linken Menü das **PostgreSQL-Symbol** aus.
+1. Wählen Sie im linken Menü das **PostgreSQL**-Symbol aus.
 
-    > &#128221; Wenn Sie das PostgreSQL-Symbol nicht sehen, wählen Sie das Symbol **Erweiterungen** und suchen Sie nach **PostgreSQL**. Wählen Sie die Erweiterung **PostgreSQL** von Microsoft aus und klicken Sie auf **Installieren**.
+    > &#128221; Wenn das PostgreSQL-Symbol nicht angezeigt wird, wählen Sie das Symbol **Erweiterungen** aus, und suchen Sie nach **PostgreSQL**. Wählen Sie die Erweiterung **PostgreSQL** von Microsoft und dann **Installieren** aus.
 
 1. Wenn Sie bereits eine Verbindung mit Ihrem PostgreSQL-*Abonnentenserver* erstellt haben, fahren Sie mit dem nächsten Schritt fort. So erstellen Sie eine neue Verbindung:
 

@@ -211,12 +211,12 @@ In diesem Abschnitt stellen Sie eine Verbindung mit dem PostgreSQL-Server mithil
 
     1. Geben Sie im Dialogfeld **NEUE VERBINDUNG** die folgenden Informationen ein:
 
-        - **Servername**: <Ihr-Server-Name>.postgres.database.azure.com
+        - **Servername**: `<your-server-name>`.postgres.database.azure.com
         - **Authentifizierungstyp**: Kennwort
         - **Benutzername**: pgAdmin
         - **Kennwort**: Das zufällige Kennwort, das Sie zuvor generiert haben.
         - Aktivieren Sie das Kontrollkästchen **Kennwort speichern**.
-        - **Verbindungsname**: <Ihr-Server-Name>
+        - **Verbindungsname**: `<your-server-name>`
 
     1. Überprüfen Sie die Verbindung, indem Sie **Verbindung testen** auswählen. Wenn die Verbindung erfolgreich hergestellt wurde, wählen Sie **Speichern und verbinden**, um die Verbindung zu speichern. Andernfalls überprüfen Sie die Verbindungsinformationen und versuchen Sie es erneut.
 
@@ -228,8 +228,6 @@ In diesem Abschnitt stellen Sie eine Verbindung mit dem PostgreSQL-Server mithil
 
 1. Vergewissern Sie sich unten rechts in Visual Studio Code, dass die Verbindung in Grün angezeigt wird. Ist dies nicht der Fall, sollte **PGSQL Disconnected** angezeigt werden. Wählen Sie den Text **PGSQL Disconnected** aus und wählen Sie anschließend Ihre PostgreSQL-Serververbindung aus der Liste in der Befehlspalette aus. Wenn Sie nach einem Kennwort gefragt werden, geben Sie das zuvor erstellte Kennwort ein.
 
-    > &#128221; Sie können die Datenbank auch im Abfragebereich ändern. Sie können den Servernamen und den Datenbanknamen unter der Abfrageregisterkarte selbst notieren. Durch Auswahl des Datenbanknamens wird eine Liste der Datenbanken angezeigt. Wählen Sie die Datenbank `zoodb` aus der Liste aus.
-
 1. Es ist an der Zeit, die Datenbank zu erstellen.
 
     1. Markieren Sie die Anweisungen **DROP** und **CREATE** und führen Sie sie aus.
@@ -238,9 +236,11 @@ In diesem Abschnitt stellen Sie eine Verbindung mit dem PostgreSQL-Server mithil
 
     1. Wählen Sie die Ellipse in der Menüleiste mit dem Symbol *Ausführen* und wählen Sie **PostgreSQL-Datenbank ändern**. Wählen Sie in der Liste der Datenbanken die Option `zoodb` aus.
 
+        > &#128221; Sie können die Datenbank auch im Abfragebereich ändern. Sie können den Servernamen und den Datenbanknamen unter der Abfrageregisterkarte selbst notieren. Durch Auswahl des Datenbanknamens wird eine Liste der Datenbanken angezeigt. Wählen Sie die Datenbank `zoodb` aus der Liste aus.
+
     1. Führen Sie die Anweisung **SELECT current_database()** erneut aus, um zu bestätigen, dass die Datenbank nun auf `zoodb` festgelegt ist.
 
-    1. Markieren Sie die Abschnitte **Erstellte Tabellen**, **Fremdschlüssel erstellen** und **Tabellen befüllen** und führen Sie sie aus.
+    1. Markieren Sie die Abschnitte **Tabellen erstellen**, **Fremdschlüssel erstellen** und **Tabellen befüllen** und führen Sie sie aus.
 
     1. Markieren Sie die 3 **SELECT**-Anweisungen am Ende des Skripts und führen Sie sie aus, um zu überprüfen, ob die Tabellen erstellt und aufgefüllt wurden.
 
@@ -418,4 +418,18 @@ Diese Tests zeigen, dass das neue Benutzerkonto DML-Befehle (Data Manipulation L
 
 1. Wenn Sie diesen PostgreSQL-Server nicht mehr für andere Übungen benötigen, um unnötige Azure-Kosten zu vermeiden, löschen Sie die in dieser Übung erstellte Ressourcengruppe.
 
+1. Wenn Sie möchten, dass der PostgreSQL-Server weiterläuft, können Sie ihn einfach laufen lassen. Wenn Sie ihn nicht laufen lassen wollen, können Sie den Server beenden, um unnötige Kosten im Bash-Terminal zu vermeiden. Um den Server zu beenden, führen Sie den folgenden Befehl aus:
+
+    ```azurecli
+    az postgres flexible-server stop --name <your-server-name> --resource-group $RG_NAME
+    ```
+
+    Ersetzen Sie `<your-server-name>` durch den Namen Ihres PostgreSQL-Servers.
+
+    > &#128221; Sie können den Server auch über das Azure-Portal stoppen. Navigieren Sie im Azure-Portal zu **Ressourcengruppen**, und wählen Sie die zuvor erstellte Ressourcengruppe aus. Wählen Sie den PostgreSQL-Server aus und wählen Sie anschließend im Menü die Option **Beenden**.
+
 1. Löschen Sie bei Bedarf das Git Repository, das Sie zuvor geklont haben.
+
+Sie haben diese Übung erfolgreich abgeschlossen. Sie haben gelernt, wie Sie RBAC-Rollen zuweisen, um den Zugriff auf Azure Database for PostgreSQL-Ressourcen zu steuern, und wie Sie PostgreSQL-GRANTS zuweisen, um den Zugriff auf Datenbankvorgänge zu steuern.
+
+Außerdem haben Sie erfahren, wie Sie ein neues Benutzerkonto in der Microsoft Entra ID erstellen und ihm die Rollen „Lesende“ und „Mitwirkender“ zuweisen. Schließlich haben Sie eine neue Rolle in der PostgreSQL-Datenbank erstellt und ihr Berechtigungen für den Zugriff auf die Datenbank zugewiesen.

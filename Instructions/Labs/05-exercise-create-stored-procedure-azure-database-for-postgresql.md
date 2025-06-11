@@ -211,12 +211,12 @@ In diesem Abschnitt stellen Sie eine Verbindung mit dem PostgreSQL-Server mithil
 
     1. Geben Sie im Dialogfeld **NEUE VERBINDUNG** die folgenden Informationen ein:
 
-        - **Servername**: <Ihr-Server-Name>.postgres.database.azure.com
+        - **Servername**: `<your-server-name>`.postgres.database.azure.com
         - **Authentifizierungstyp**: Kennwort
         - **Benutzername**: pgAdmin
         - **Kennwort**: Das zufällige Kennwort, das Sie zuvor generiert haben.
         - Aktivieren Sie das Kontrollkästchen **Kennwort speichern**.
-        - **Verbindungsname**: <Ihr-Server-Name>
+        - **Verbindungsname**: `<your-server-name>`
 
     1. Überprüfen Sie die Verbindung, indem Sie **Verbindung testen** auswählen. Wenn die Verbindung erfolgreich hergestellt wurde, wählen Sie **Speichern und verbinden**, um die Verbindung zu speichern. Andernfalls überprüfen Sie die Verbindungsinformationen und versuchen Sie es erneut.
 
@@ -228,8 +228,6 @@ In diesem Abschnitt stellen Sie eine Verbindung mit dem PostgreSQL-Server mithil
 
 1. Vergewissern Sie sich unten rechts in Visual Studio Code, dass die Verbindung in Grün angezeigt wird. Ist dies nicht der Fall, sollte **PGSQL Disconnected** angezeigt werden. Wählen Sie den Text **PGSQL Disconnected** aus und wählen Sie anschließend Ihre PostgreSQL-Serververbindung aus der Liste in der Befehlspalette aus. Wenn Sie nach einem Kennwort gefragt werden, geben Sie das zuvor erstellte Kennwort ein.
 
-    > &#128221; Sie können die Datenbank auch im Abfragebereich ändern. Sie können den Servernamen und den Datenbanknamen unter der Abfrageregisterkarte selbst notieren. Durch Auswahl des Datenbanknamens wird eine Liste der Datenbanken angezeigt. Wählen Sie die Datenbank `zoodb` aus der Liste aus.
-
 1. Es ist an der Zeit, die Datenbank zu erstellen.
 
     1. Markieren Sie die Anweisungen **DROP** und **CREATE** und führen Sie sie aus.
@@ -237,6 +235,8 @@ In diesem Abschnitt stellen Sie eine Verbindung mit dem PostgreSQL-Server mithil
     1. Wenn Sie nur die Anweisung **SELECT current_database()** markieren und ausführen, werden Sie feststellen, dass die Datenbank derzeit auf `postgres` festgelegt ist. Sie müssen sie in `zoodb` ändern.
 
     1. Wählen Sie die Ellipse in der Menüleiste mit dem Symbol *Ausführen* und wählen Sie **PostgreSQL-Datenbank ändern**. Wählen Sie in der Liste der Datenbanken die Option `zoodb` aus.
+
+        > &#128221; Sie können die Datenbank auch im Abfragebereich ändern. Sie können den Servernamen und den Datenbanknamen unter der Abfrageregisterkarte selbst notieren. Durch Auswahl des Datenbanknamens wird eine Liste der Datenbanken angezeigt. Wählen Sie die Datenbank `zoodb` aus der Liste aus.
 
     1. Führen Sie die Anweisung **SELECT current_database()** erneut aus, um zu bestätigen, dass die Datenbank nun auf `zoodb` festgelegt ist.
 
@@ -288,23 +288,27 @@ Es ist an der Zeit, eine Tabellenwertfunktion zu erstellen. Eine Tabellenwertfun
 
 1. Markieren Sie die gespeicherte Prozedur **CALL repopulate_zoo()**, und führen Sie sie aus, um mit bereinigten Daten zu beginnen.
 
-1. Markieren Sie den Abschnitt nach dem Kommentar **Create a table valued function** und führen Sie ihn aus. Diese Funktion gibt eine Tabelle namens **enclosure_summary** zurück. Lesen Sie sich den Funktionscode durch, um zu verstehen, wie die Tabelle aufgefüllt wird.
+1. Markieren Sie das Skript nach dem Kommentar **Create a table valued function** und führen Sie es aus. Diese Funktion gibt eine Tabelle namens **enclosure_summary** zurück. Lesen Sie sich den Funktionscode durch, um zu verstehen, wie die Tabelle aufgefüllt wird.
 
 1. Markieren Sie die beiden ausgewählten Anweisungen, und führen Sie sie aus, wobei Sie jedes Mal eine andere Gehege-ID eingeben.
 
-1. Markieren Sie den Abschnitt unter dem Kommentar **How to use a table valued function with a LATERAL join** und führen Sie ihn aus. Dieses Skript zeigt, wie die Tabellenwertfunktion anstelle eines Tabellennamens in einer Verknüpfung verwendet wird.
+1. Markieren Sie das Skript unter dem Kommentar **How to use a table valued function with a LATERAL join** und führen Sie es aus. Dieses Skript zeigt, wie die Tabellenwertfunktion anstelle eines Tabellennamens in einer Verknüpfung verwendet wird.
 
 ## Integrierte Funktionen
 
 In diesem Abschnitt erkunden Sie einige der integrierten Funktionen, die in PostgreSQL verfügbar sind. PostgreSQL verfügt über eine vielzahl integrierter Funktionen, mit denen Sie verschiedene Vorgänge für Daten ausführen können. Diese Funktionen können in SQL-Abfragen verwendet werden, um Daten zu bearbeiten und zu analysieren.
 
-1. Wählen Sie in Visual Studio Code **Datei**, **Datei öffnen** und navigieren Sie dann zu den Lab-Skripten. Wählen Sie **../Allfiles/Labs/05/Lab5_InbuiltFunctions.sql** und anschließend **Öffnen**. Stellen Sie gegebenenfalls die Verbindung zum Server wieder her, indem Sie den Text **PGSQL Disconnected** auswählen und anschließend Ihre PostgreSQL-Serververbindung aus der Liste in der Befehlspalette auswählen. Wenn Sie nach einem Kennwort gefragt werden, geben Sie das zuvor erstellte Kennwort ein.
+1. Wählen Sie in Visual Studio Code **Datei**, **Datei öffnen** und navigieren Sie dann zu den Lab-Skripten. Wählen Sie **../Allfiles/Labs/05/Lab5_SimpleFunctions.sql** und wählen Sie dann **Öffnen**. Stellen Sie gegebenenfalls die Verbindung zum Server wieder her, indem Sie den Text **PGSQL Disconnected** auswählen und anschließend Ihre PostgreSQL-Serververbindung aus der Liste in der Befehlspalette auswählen. Wenn Sie nach einem Kennwort gefragt werden, geben Sie das zuvor erstellte Kennwort ein.
 
 > &#128221; Die Funktionen in diesem Skript sind nicht spezifisch für die Zoodatenbank. Sie sind allgemeine PostgreSQL-Funktionen, die in jeder Datenbank verwendet werden können. Sie können sie in einer beliebigen Datenbank ausführen, einschließlich der `postgres`-Datenbank.
 
 1. Markieren Sie die einzelnen Funktionen, und führen Sie sie aus, um zu ermitteln, wie sie funktionieren. Weitere Informationen finden Sie im Artikel der [Online-Dokumentation](https://www.postgresql.org/docs/current/functions.html) zu den einzelnen Funktionen.
 
-1. Wenn Sie möchten, dass der PostgreSQL-Server weiterläuft, können Sie ihn einfach laufen lassen. Andernfalls können Sie den Server beenden, um unnötige Kosten im Bash-Terminal zu vermeiden. Um den Server zu beenden, führen Sie den folgenden Befehl aus:
+## Bereinigung
+
+1. Wenn Sie diesen PostgreSQL-Server nicht mehr für andere Übungen benötigen, um unnötige Azure-Kosten zu vermeiden, löschen Sie die in dieser Übung erstellte Ressourcengruppe.
+
+1. Wenn Sie möchten, dass der PostgreSQL-Server weiterläuft, können Sie ihn einfach laufen lassen. Wenn Sie ihn nicht laufen lassen wollen, können Sie den Server beenden, um unnötige Kosten im Bash-Terminal zu vermeiden. Um den Server zu beenden, führen Sie den folgenden Befehl aus:
 
     ```azurecli
     az postgres flexible-server stop --name <your-server-name> --resource-group $RG_NAME
@@ -314,10 +318,8 @@ In diesem Abschnitt erkunden Sie einige der integrierten Funktionen, die in Post
 
     > &#128221; Sie können den Server auch über das Azure-Portal stoppen. Navigieren Sie im Azure-Portal zu **Ressourcengruppen**, und wählen Sie die zuvor erstellte Ressourcengruppe aus. Wählen Sie den PostgreSQL-Server aus und wählen Sie anschließend im Menü die Option **Beenden**.
 
-1. Schließen Sie Visual Studio Code.
-
-## Bereinigung
-
-1. Wenn Sie diesen PostgreSQL-Server nicht mehr für andere Übungen benötigen, um unnötige Azure-Kosten zu vermeiden, löschen Sie die in dieser Übung erstellte Ressourcengruppe.
-
 1. Löschen Sie bei Bedarf das Git Repository, das Sie zuvor geklont haben.
+
+Sie haben diese Übung erfolgreich abgeschlossen. In dieser Übung haben Sie einige gespeicherte Prozeduren erstellt und ausgeführt. Sie haben auch eine Tabellenwertfunktion erstellt und einige der integrierten Funktionen untersucht, die in PostgreSQL verfügbar sind.
+
+Sie können diese gespeicherten Prozeduren und Funktionen jetzt in Ihren eigenen PostgreSQL-Datenbanken verwenden, um verschiedene Vorgänge für Daten auszuführen.
